@@ -1,0 +1,27 @@
+{
+    "id": "47BA5291",
+    "path": "C:/Users/paulo/Downloads/sobrevivencia/Script_com as contas.R",
+    "project_path": "Script_com as contas.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1777644557063.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "322,3",
+        "scrollLine": "0"
+    },
+    "folds": "14|24|54|0|\n55|19|95|0|\n110|22|123|0|\n126|19|147|0|\n148|15|169|0|\n170|17|192|0|\n193|16|214|0|\n215|17|236|0|\n237|27|261|0|\n",
+    "lastKnownWriteTime": 1777660777,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1777660777603,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,758 @@
+---
+title: "**Análise de Sobrevivência e Confiabilidade**"
+subtitle: "**Parte 1: Análise não paramétrica**"
+author: "Paulo Victor Zava Pereira (<paulozava@id.uff.br>) <br> "
+date: today
+date-format: "DD/MM/YYYY"
+institute: "Universidade Federal Fluminense"
+format:
+  revealjs:
+    css: custom.css
+    slide-number: true
+    incremental: false
+    transition: slide
+    background-transition: fade
+    width: 1280
+    height: 720
+    margin: 0.07
+    auto-stretch: false
+    title-slide-attributes:
+      data-background-image: "Capa.png"
+      data-background-size: cover
+---
+
+# Introdução {data-background-image="Capa.png" style="text-align:center"}
+
+## **Contexto do Estudo**
+
+Base de dados pública derivada de estudos clínicos clássicos, como o programa de transplante cardíaco da Universidade de Stanford (EUA). Inclui pacientes com insuficiência cardíaca avançada, elegíveis para transplante, acompanhados prospectivamente para investigar fatores associados à sobrevivência.
+
+Trata-se de um estudo observacional com seguimento ao longo do tempo até o óbito ou fim do acompanhamento. O período pode se estender por anos, refletindo a complexidade clínica. Há presença de censura (pacientes sem evento ou perdidos no seguimento), assumida como não informativa, sem truncamento dos dados.
+
+## **Base de dados** {.scrollable}
+
+A base de dados é composta por 2500 pacientes (linhas) e 12 variáveis (colunas).
+
+| Variável | Significado | Unidade / Categoria |
+|----|----|----|
+| observed_time_years | Tempo até evento ou censura | Anos |
+| event | Desfecho final | 0 = censurado; 1 = óbito |
+| recipient_age | Idade do receptor | Anos |
+| donor_age | Idade do doador | Anos |
+| weight_kg | Peso do receptor | kg |
+| creatinine | Nivel de creatinina (função renal) | mg/dL |
+| bilirubin | Nivel de bilirrubina (função hepática) | mg/dL |
+| ventilator_support | Ventilação mecânica pré-transplante | 0 = não; 1 = sim |
+| ecmo_support | Suporte ECMO pré-transplante | 0 = não; 1 = sim |
+| donor_recipient_blood_mismatch | Incompatibilidade sanguínea | 0 = compatível; 1 = incompatível |
+| ischemic_time_hours | Tempo de isquemia do órgão | Horas |
+| previous_surgery | Cirurgia prévia do receptor | 0 = não; 1 = sim |
+
+## **Importância das Variáveis** {.scrollable}
+
+-   **Idade do receptor:** Associada ao risco cirúrgico e à capacidade de recuperação.
+
+-   **Idade do doador:** Impacta a qualidade do órgão transplantado.
+
+-   **Peso do receptor:** Relacionado ao estado nutricional e risco clínico.
+
+-   **Creatinina:** Indicador de função renal; valores altos aumentam o risco.
+
+-   **Bilirrubina:** Reflete função hepática; alterações indicam pior prognóstico.
+
+-   **Ventilação mecânica:** Indica gravidade clínica antes do transplante.
+
+-   **Suporte ECMO (Oxigenação por Membrana Extracorpórea):** Marcador de condição crítica e alta complexidade.
+
+-   **Incompatibilidade sanguínea:** Aumenta o risco de rejeição do órgão.
+
+-   **Tempo de isquemia (Período em que o órgão fica sem circulação sanguínea):** Períodos longos prejudicam a viabilidade do órgão.
+
+-   **Cirurgia prévia:** Pode aumentar a complexidade e os riscos do procedimento.
+
+## **Expectativas Iniciais** {.scrollable}
+
+Pacientes em estado clínico mais grave antes do transplante tendem a apresentar pior evolução. Fatores como idade avançada do receptor, maior peso, disfunções renal e hepática (creatinina e bilirrubina elevadas), além do uso de suporte intensivo (ventilação mecânica e ECMO), estão associados a maior risco de complicações e menor sobrevida.
+
+Além das condições clínicas do paciente, fatores relacionados ao procedimento também influenciam o prognóstico. A incompatibilidade sanguínea entre doador e receptor e o maior tempo de isquemia do órgão podem comprometer a função do enxerto, aumentando o risco de rejeição, falha do órgão e mortalidade.
+
+Como consequência, espera-se que tanto características clínicas quanto fatores cirúrgicos tenham papel importante na explicação da sobrevida após o transplante.
+
+# Metodologia {data-background-image="Capa.png" style="text-align:center"}
+
+## Análise descritiva
+
+Para compreender melhor o perfil dos pacientes do estudo, serão calculadas medidas-resumo para as variáveis numéricas, como média, mediana e quartis (primeiro e terceiro), incluindo idade, peso e tempo de isquemia. Além disso, serão utilizados boxplots para visualizar a distribuição desses dados.\
+
+Para as variáveis categóricas, serão analisadas as proporções de cada categoria, acompanhadas de gráficos de barras para facilitar a visualização de seus comportamentos.
+
+## Análise não-paramétrica
+
+### Estimador de Kaplan-Meier
+
+A função de sobrevivência representa a probabilidade de um paciente sobreviver além de um determinado tempo. Neste trabalho, não será assumida uma distribuição de probabilidade específica para o tempo até o evento, sendo necessária a estimação dessa função a partir dos dados.
+
+Para isso, utilizaremos o estimador de Kaplan-Meier, que calcula a sobrevivência ao longo do tempo considerando a ocorrência de eventos (óbitos) e a presença de censura. A estimativa é construída de forma acumulativa, com base nas proporções de pacientes que sobrevivem em cada instante observado.
+
+Esse estimador possui boas propriedades: é o estimador de máxima verossimilhança da função de sobrevivência , sendo consistente. Além disso, na ausência de censura, ele se reduz à função de sobrevivência empírica.
+
+## Análise não-paramétrica
+
+### **Intervalos de Confiança para** sobrevivência
+
+Como o estimador de Kaplan-Meier é um estimador de máxima verossimilhança para a função de sobrevivência, é possível construir intervalos de confiança para essa função.
+
+Um intervalo de confiança de 100(1−α)% pode ser obtido a partir do estimador pontual, utilizando o erro padrão (derivado da variância do estimador) e o quantil da distribuição normal.
+
+Para obter intervalos mais adequados — garantindo que os limites permaneçam no intervalo (0,1) — aplicamos a transformação log-log.
+
+## Análise não-paramétrica
+
+### Percentis
+
+Como o estimador de Kaplan-Meier gera uma função em escada (descontínua), os percentis são obtidos identificando o primeiro tempo em que a curva de sobrevivência atinge ou fica abaixo da proporção desejada.
+
+No contexto deste estudo, isso significa encontrar o primeiro instante em que a probabilidade estimada de sobrevivência dos pacientes cai até o nível correspondente ao percentil de interesse. Por exemplo, o tempo mediano de sobrevivência corresponde ao momento em que a curva atinge 50%.
+
+## Análise não-paramétrica
+
+### Teste de Log-Rank
+
+O teste de Log-Rank é utilizado para comparar curvas de sobrevivência entre diferentes grupos, verificando se há diferenças ao longo do tempo. Em outras palavras, ele avalia se os grupos apresentam comportamentos semelhantes de sobrevivência ou se pelo menos um deles se diferencia dos demais.
+
+No contexto deste estudo, os pacientes podem ser divididos em grupos com base em características clínicas, como uso de suporte ECMO ou ventilação mecânica. Assim, o teste permite identificar se essas condições estão associadas a diferenças na sobrevida após o transplante.
+
+O teste de Peto-Peto é semelhante ao Log-Rank, porém dá mais peso às diferenças que ocorrem no início do acompanhamento. Por isso, é mais indicado quando o interesse está em identificar diferenças precoces entre os grupos, como no período logo após o transplante.
+
+## Análise não-paramétrica
+
+### **Holm-Bonferroni**
+
+Quando um teste global, como o Log-Rank ou o Peto-Peto, indica diferença entre os grupos, é necessário identificar quais grupos, de fato, se diferenciam. Para isso, utiliza-se o procedimento de Holm-Bonferroni, que realiza comparações par a par com ajuste no nível de significância, controlando o erro do tipo I — ou seja, reduzindo a chance de concluir que existe diferença quando, na verdade, não existe.
+
+Esse procedimento consiste em ordenar os p-valores das comparações e testá-los sequencialmente com critérios mais rigorosos, garantindo que o erro global da análise seja controlado.
+
+No contexto deste estudo, isso permite identificar, por exemplo, quais grupos de pacientes (como com ou sem ECMO, ou com e sem ventilação mecânica) apresentam diferenças significativas na sobrevida após o transplante.
+
+# Resultados {data-background-image="Capa.png" style="text-align:center"}
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(survival)
+library(ggsurvfit)
+library(muhaz)
+library(survRM2)
+library(coin)
+
+base=read_xlsx(path = "transplante.xlsx") 
+```
+
+## Medidas resumos para variaveis qualitativas {.scrollable}
+
+::: panel-tabset
+### Ventilação Mecânica
+
+```{r}
+tabela <- base |>
+  mutate(
+    ventilator_support = if_else(ventilator_support == 1, "Sim", "Não")
+  ) |>
+  count(ventilator_support, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      ventilator_support = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("Ventilação Mecânica", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+
+base |>
+  mutate(
+    ventilator_support = if_else(ventilator_support == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = ventilator_support)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Uso de ventilação mecânica antes do transplante",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+
+```
+
+### Suporte ECMO
+
+```{r}
+tabela <- base |>
+  mutate(
+    ecmo_support = if_else(ecmo_support == 1, "Sim", "Não")
+  ) |>
+  count(ecmo_support, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      ecmo_support = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("ECMO", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+<br><br>
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    ecmo_support = if_else(ecmo_support == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = ecmo_support)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Uso ECMO do transplante",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+
+### Incompatibilidade sanguínea
+
+```{r}
+tabela <- base |>
+  mutate(
+    donor_recipient_blood_mismatch = if_else(donor_recipient_blood_mismatch == 0, "Compatível", "Incompatívo")
+  ) |>
+  count(donor_recipient_blood_mismatch, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      donor_recipient_blood_mismatch = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("Incompatibilidade sanguínea", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+<br><br>
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    donor_recipient_blood_mismatch = if_else(donor_recipient_blood_mismatch == 0, "Compatível", "Incompatívo")
+  ) |>
+  ggplot(aes(x = donor_recipient_blood_mismatch)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Incompatibilidade sanguínea?",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+
+### Cirugia anterior
+
+```{r}
+tabela <- base |>
+  mutate(
+    previous_surgery = if_else(previous_surgery == 1, "Sim", "Não")
+  ) |>
+  count(previous_surgery, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      previous_surgery = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("ECMO", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+<br><br>
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    previous_surgery = if_else(previous_surgery == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = previous_surgery)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Fez cirurgia antes?",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+:::
+
+## Medidas resumos para variaveis quatintativas {.scrollable}
+
+::: panel-tabset
+### Idade do Receptor
+
+```{r}
+tabela_resumo <- base |>
+  summarise(
+    Min= min(recipient_age, na.rm = TRUE),
+    Média = mean(recipient_age, na.rm = TRUE),
+    `1º Quartil` = quantile(recipient_age, 0.25, na.rm = TRUE),
+    Mediana = median(recipient_age, na.rm = TRUE),
+    `3º Quartil` = quantile(recipient_age, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(recipient_age), decreasing = TRUE)[1])),
+    Max= max(recipient_age, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=recipient_age))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Idade do Receptor")+
+  theme_classic(base_size = 16)
+
+```
+
+### Idade do Doador
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(donor_age, na.rm = TRUE),
+    Média = mean(donor_age, na.rm = TRUE),
+    `1º Quartil` = quantile(donor_age, 0.25, na.rm = TRUE),
+    Mediana = median(donor_age, na.rm = TRUE),
+    `3º Quartil` = quantile(donor_age, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(donor_age), decreasing = TRUE)[1])),
+    Max= max(donor_age, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=donor_age))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Idade do Doador")+
+  theme_classic(base_size = 16)
+
+```
+
+### Peso do Receptor
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(weight_kg, na.rm = TRUE),
+    Média = mean(weight_kg, na.rm = TRUE),
+    `1º Quartil` = quantile(weight_kg, 0.25, na.rm = TRUE),
+    Mediana = median(weight_kg, na.rm = TRUE),
+    `3º Quartil` = quantile(weight_kg, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(weight_kg), decreasing = TRUE)[1])),
+    Max= max(weight_kg, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=weight_kg))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Peso do Receptor")+
+  theme_classic(base_size = 16)
+
+```
+
+### Nível de Creatinina
+
+```{r}
+tabela_resumo <- base |>
+  summarise(
+    Min= min(creatinine, na.rm = TRUE),
+    Média = mean(creatinine, na.rm = TRUE),
+    `1º Quartil` = quantile(creatinine, 0.25, na.rm = TRUE),
+    Mediana = median(creatinine, na.rm = TRUE),
+    `3º Quartil` = quantile(creatinine, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(creatinine), decreasing = TRUE)[1])),
+    Max= max(creatinine, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=creatinine))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Nível de Creatinina")+
+  theme_classic(base_size = 16)
+
+```
+
+### Nível de Bilirrubina
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(bilirubin, na.rm = TRUE),
+    Média = mean(bilirubin, na.rm = TRUE),
+    `1º Quartil` = quantile(bilirubin, 0.25, na.rm = TRUE),
+    Mediana = median(bilirubin, na.rm = TRUE),
+    `3º Quartil` = quantile(bilirubin, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(bilirubin), decreasing = TRUE)[1])),
+    Max= max(bilirubin, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=bilirubin))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Nível de Bilirrubina")+
+  theme_classic(base_size = 16)
+
+```
+
+### Tempo de Isquemia
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(ischemic_time_hours, na.rm = TRUE),
+    Média = mean(ischemic_time_hours, na.rm = TRUE),
+    `1º Quartil` = quantile(ischemic_time_hours, 0.25, na.rm = TRUE),
+    Mediana = median(ischemic_time_hours, na.rm = TRUE),
+    `3º Quartil` = quantile(ischemic_time_hours, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(ischemic_time_hours), decreasing = TRUE)[1])),
+    Max= max(ischemic_time_hours, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+<br><br>
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=ischemic_time_hours))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Tempo de Isquemia  (Horas)",
+       x = NULL)+
+  theme_classic(base_size = 16)
+```
+:::
+
+## Comparação de Curvas {.scrollable}
+
+```{r}
+base= base |> 
+  rename(tempos=observed_time_years,
+         cens=event)
+
+base <- base |>
+  mutate(
+    ventilator_support2 = factor(
+      ventilator_support,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    ),
+    ecmo_support2=factor(
+      ecmo_support,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    ),
+    donor_recipient_blood_mismatch2 = factor(
+      donor_recipient_blood_mismatch,
+      levels = c(0, 1),
+      labels = c("Compatível", "Incompatívo")
+    ),
+    previous_surgery2= factor(
+      previous_surgery,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    )
+  )
+```
+
+::: panel-tabset
+### Geral
+
+```{r fig.align='center'}
+ekm1<- survfit2(data=base,
+                formula = Surv(tempos,cens)~1,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm1, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "red")+
+  add_quantile(y_value = 0.5)+
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+### Ventilação Mecânica
+
+```{r fig.align='center'}
+ekm2<- survfit2(data=base,
+                formula = Surv(tempos,cens)~ventilator_support2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm2, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+A=survdiff(Surv(tempos,cens)~ventilator_support2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(ventilator_support2),type="Peto-Peto", data = base)
+
+format_p <- function(p) {
+  if (p < 0.001) {
+    "< 0.001"
+  } else {
+    sprintf("%.3f", p)
+  }
+}
+
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+```
+
+### Suporte ECM0
+
+```{r fig.align='center'}
+ekm3<- survfit2(data=base,
+                formula = Surv(tempos,cens)~ecmo_support2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm3, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~ecmo_support2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(ecmo_support2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+
+### Incompatibilidade sanguinea
+
+```{r fig.align='center'}
+ekm4<- survfit2(data=base,
+                formula = Surv(tempos,cens)~donor_recipient_blood_mismatch2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm4, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~donor_recipient_blood_mismatch2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(donor_recipient_blood_mismatch2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+
+### Cirurgia anterior
+
+```{r fig.align='center'}
+ekm5<- survfit2(data=base,
+                formula = Surv(tempos,cens)~previous_surgery2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm5, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~previous_surgery2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(previous_surgery2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+:::
+
+# Conclusão {data-background-image="Capa.png" style="text-align:center"}
+
+## **Conclusão**
+
+-   Aproximadamente **50% dos pacientes sobrevivem até cerca de 4 anos** após o transplante.
+
+-   O uso de **ventilação mecânica** está associado a diferenças significativas na sobrevivência.
+
+-   O uso de **suporte ECMO** também apresenta associação com a sobrevida dos pacientes.
+
+-   A **incompatibilidade sanguínea** entre doador e receptor impacta negativamente a sobrevivência.
+
+-   Não foram encontradas evidências de que **cirurgias prévias** influenciem significativamente a sobrevida.
+
+## **Possíveis Melhorias**
+
+-   Explorar com mais profundidade as **variáveis quantitativas** na análise de sobrevivência.
+
+-   Avaliar o uso de **modelos paramétricos**, buscando comparar resultados com a abordagem não paramétrica.
+
+-   Investigar possíveis **interações entre variáveis clínicas**.

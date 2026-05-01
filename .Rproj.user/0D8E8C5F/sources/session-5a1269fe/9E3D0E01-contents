@@ -1,0 +1,331 @@
+#Execicios da aula 9
+
+
+####Dados cancer #####
+tempos <- c(
+  28, 89, 175, 195, 309, 377, 393, 421,
+  447, 462, 709, 744, 770, 1106, 1206,
+  34, 88, 137, 199, 280, 291, 299, 300, 309,
+  351, 358, 369, 369, 370, 375, 382, 392,
+  429, 451, 1119
+)
+
+cens <- c(
+  1,1,1,1,1,0,0,0,
+  0,1,0,0,0,0,0,
+  1,1,1,1,1,1,0,0,1,
+  1,1,1,1,1,1,1,1,
+  0,1,0
+)
+
+grupos <- c(
+  rep("Tumor Grande", 15),
+  rep("Tumor Pequeno", 20)
+)
+
+DadosO <- data.frame(tempos, cens, grupos)
+
+###### questão 1######
+
+#Letra A
+ekm<- survfit2(data=DadosO,
+               formula = Surv(tempos,cens)~grupos,
+               conf.type = "log-log", 
+               conf.int=0.95)
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#As curvas não aparentam diferenças
+
+#Letra B
+
+#H0: curvas iguais
+#H0: Curvas diferentes
+#Teste log-rank
+A=survdiff(Surv(tempos,cens)~grupos, data=DadosO)
+
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#pvalor= 0,018
+#Teste Peto-Peto
+
+B=logrank_test(Surv(tempos,cens)~factor(grupos),type="Peto-Peto")
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(caption = "p=0.098",
+             location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+#pvalor= 0.09784
+
+#### Dados de Leishmaniose####
+tempos <- c(
+  1, 4, 5, 6, 7, 7,
+  3, 5, 5, 5, 6,
+  1, 3, 4, 7, 7, 7,
+  3, 5, 7, 7, 7,
+  3, 5, 5, 7, 7, 7
+)
+
+cens <- c(
+  1,1,1,1,0,0,
+  1,1,0,0,1,
+  1,1,0,1,1,0,
+  1,0,1,0,0,
+  1,1,1,0,0,0
+)
+
+grupos <- c(
+  rep("A",6),
+  rep("B",5),
+  rep("C",6),
+  rep("D",5),
+  rep("Controle",6)
+)
+
+DadosL <- data.frame(tempos, cens, grupos)
+
+###### questão 2######
+#Letra A
+ekm<- survfit2(data=DadosL,
+               formula = Surv(tempos,cens)~grupos,
+               conf.type = "log-log", 
+               conf.int=0.95)
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#As curvas não aparentam diferenças
+
+#Letra B
+
+#H0: Todas as curvas são iguais para todo ts
+#H0: Pelo menos uma curva diferente ewm algum tempo t
+#Teste log-rank
+survdiff(Surv(tempos,cens)~grupos, data=DadosL)
+
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#pvalor= 0,08
+#Teste Peto-Peto
+
+logrank_test(Surv(tempos,cens)~factor(grupos),type="Peto-Peto")
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(caption = "p=0.856",
+             location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+#pvalor= 0.8555
+
+#####  AIDS #####
+library(readr)
+dadosA= read_csv(file= "DadosAIDS2.csv")
+
+###### questão 3######
+#Letra A
+ekm<- survfit2(data=dadosA,
+               formula = Surv(tempo,status)~sexo,
+               conf.type = "log-log", 
+               conf.int=0.95)
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#As curvas não aparentam diferenças
+
+#Letra B
+
+#H0: Todas as curvas são iguais para todo ts
+#H0: Pelo menos uma curva diferente ewm algum tempo t
+
+#Teste log-rank
+survdiff(Surv(tempo,status)~sexo, data=dadosA)
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#pvalor= 0.045
+#Teste Peto-Peto
+
+logrank_test(Surv(tempo,status)~factor(sexo),type="Peto-Peto")
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(caption = "p=0.856",
+             location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+#pvalor= 0.8555
+
+#Letra C
+ekm<- survfit2(data=DadosL,
+               formula = Surv(tempo,status)~tratam,
+               conf.type = "log-log", 
+               conf.int=0.95)
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#As curvas não aparentam diferenças
+
+#Letra D
+
+#H0: Todas as curvas são iguais para todo ts
+#H0: Pelo menos uma curva diferente ewm algum tempo t
+#Teste log-rank
+survdiff(Surv(tempo,status)~tratam, data=dadosA)
+
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_risktable() +
+  add_censor_mark()+
+  scale_ggsurvfit() +
+  add_pvalue(location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+
+#pvalor= 0,08
+#Teste Peto-Peto
+
+logrank_test(Surv(tempo,status)~factor(tratam),type="Peto-Peto")
+
+ggsurvfit(ekm, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark()+
+  add_risktable() +
+  scale_ggsurvfit() +
+  add_pvalue(caption = "p=0.856",
+             location = "annotation")+
+  labs(
+    x = "Tempo (semanas)",
+    y = "Sobrevivência estimada"
+  ) +
+  theme_classic(base_size = 16)
+#pvalor= 0.8555
+
+
+#Letra E
+
+#Comparação multipla
+Letrinhas <- function(p_mat, alpha = 0.05) {
+  p_mat <- as.matrix(p_mat)
+  mode(p_mat) <- "numeric"
+  rownames(p_mat) <- as.character(rownames(p_mat))
+  colnames(p_mat) <- as.character(colnames(p_mat))
+  grupos <- union(rownames(p_mat), colnames(p_mat))
+  mat_full <- matrix(NA, 
+                     nrow = length(grupos), 
+                     ncol = length(grupos),
+                     dimnames = list(grupos, grupos))
+  mat_full[rownames(p_mat), colnames(p_mat)] <- p_mat
+  for (i in seq_len(nrow(mat_full))) {
+    for (j in seq_len(ncol(mat_full))) {
+      if (is.na(mat_full[i, j]) && !is.na(mat_full[j, i])) {
+        mat_full[i, j] <- mat_full[j, i]
+      }
+    }
+  }
+  diag(mat_full) <- 1
+  rownames(mat_full) <- colnames(mat_full)
+  multcompView::multcompLetters(mat_full, threshold = alpha)$Letters
+}
+
+res = pairwise_survdiff(Surv(tempo,status)~tratam,
+                        data=dadosA,
+                        p.adjust.method = "bonferroni",
+                        rho=0)
+p_bonf = res$p.value
+Letrinhas(p_mat = p_bonf)
+
+res = pairwise_survdiff(Surv(tempo,status)~tratam,
+                        data=DadosM,
+                        p.adjust.method = "holm",
+                        rho=0)# 0 = lonk rank e 1 = peto-peto
+p_holm = res$p.value
+Letrinhas(p_mat = p_holm, alpha = 0.05)
