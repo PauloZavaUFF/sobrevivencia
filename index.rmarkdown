@@ -1,0 +1,1772 @@
+---
+title: "**Análise de Sobrevivência e Confiabilidade**"
+subtitle: "**Parte 2: Análise paramétrica**"
+author: "Paulo Victor Zava Pereira (<paulozava@id.uff.br>) <br> "
+date: today
+date-format: "DD/MM/YYYY"
+institute: "Universidade Federal Fluminense"
+format:
+  revealjs:
+    css: custom.css
+    slide-number: true
+    incremental: false
+    transition: slide
+    background-transition: fade
+    width: 1280
+    height: 720
+    margin: 0.07
+    auto-stretch: false
+    title-slide-attributes:
+      data-background-image: "Capa.png"
+      data-background-size: cover
+---
+
+
+
+# Introdução {data-background-image="Capa.png" style="text-align:center"}
+
+## **Contexto do Estudo**
+
+Base de dados pública derivada de estudos clínicos clássicos, como o programa de transplante cardíaco da Universidade de Stanford (EUA). Inclui pacientes com insuficiência cardíaca avançada, elegíveis para transplante, acompanhados prospectivamente para investigar fatores associados à sobrevivência.
+
+Trata-se de um estudo observacional com seguimento ao longo do tempo até o óbito ou fim do acompanhamento. O período pode se estender por anos, refletindo a complexidade clínica. Há presença de censura (pacientes sem evento ou perdidos no seguimento), assumida como não informativa, sem truncamento dos dados.
+
+## **Base de dados** {.scrollable}
+
+A base de dados é composta por 2500 pacientes (linhas) e 12 variáveis (colunas).
+
+| Variável | Significado | Unidade / Categoria |
+|------------------------|------------------------|------------------------|
+| observed_time_years | Tempo até evento ou censura | Anos |
+| event | Desfecho final | 0 = censurado; 1 = óbito |
+| recipient_age | Idade do receptor | Anos |
+| donor_age | Idade do doador | Anos |
+| weight_kg | Peso do receptor | kg |
+| creatinine | Nivel de creatinina (função renal) | mg/dL |
+| bilirubin | Nivel de bilirrubina (função hepática) | mg/dL |
+| ventilator_support | Ventilação mecânica pré-transplante | 0 = não; 1 = sim |
+| ecmo_support | Suporte ECMO pré-transplante | 0 = não; 1 = sim |
+| donor_recipient_blood_mismatch | Incompatibilidade sanguínea | 0 = compatível; 1 = incompatível |
+| ischemic_time_hours | Tempo de isquemia do órgão | Horas |
+| previous_surgery | Cirurgia prévia do receptor | 0 = não; 1 = sim |
+
+## **Importância das Variáveis** {.scrollable}
+
+-   **Idade do receptor:** Associada ao risco cirúrgico e à capacidade de recuperação.
+
+-   **Idade do doador:** Impacta a qualidade do órgão transplantado.
+
+-   **Peso do receptor:** Relacionado ao estado nutricional e risco clínico.
+
+-   **Creatinina:** Indicador de função renal; valores altos aumentam o risco.
+
+-   **Bilirrubina:** Reflete função hepática; alterações indicam pior prognóstico.
+
+-   **Ventilação mecânica:** Indica gravidade clínica antes do transplante.
+
+-   **Suporte ECMO (Oxigenação por Membrana Extracorpórea):** Marcador de condição crítica e alta complexidade.
+
+-   **Incompatibilidade sanguínea:** Aumenta o risco de rejeição do órgão.
+
+-   **Tempo de isquemia (Período em que o órgão fica sem circulação sanguínea):** Períodos longos prejudicam a viabilidade do órgão.
+
+-   **Cirurgia prévia:** Pode aumentar a complexidade e os riscos do procedimento.
+
+## **Expectativas Iniciais** {.scrollable}
+
+Pacientes em estado clínico mais grave antes do transplante tendem a apresentar pior evolução. Fatores como idade avançada do receptor, maior peso, disfunções renal e hepática (creatinina e bilirrubina elevadas), além do uso de suporte intensivo (ventilação mecânica e ECMO), estão associados a maior risco de complicações e menor sobrevida.
+
+Além das condições clínicas do paciente, fatores relacionados ao procedimento também influenciam o prognóstico. A incompatibilidade sanguínea entre doador e receptor e o maior tempo de isquemia do órgão podem comprometer a função do enxerto, aumentando o risco de rejeição, falha do órgão e mortalidade.
+
+Como consequência, espera-se que tanto características clínicas quanto fatores cirúrgicos tenham papel importante na explicação da sobrevida após o transplante.
+
+# Metodologia {data-background-image="Capa.png" style="text-align:center"}
+
+## Análise descritiva
+
+Para compreender melhor o perfil dos pacientes do estudo, serão calculadas medidas-resumo para as variáveis numéricas, como média, mediana e quartis (primeiro e terceiro), incluindo idade, peso e tempo de isquemia. Além disso, serão utilizados boxplots para visualizar a distribuição desses dados.\
+
+Para as variáveis categóricas, serão analisadas as proporções de cada categoria, acompanhadas de gráficos de barras para facilitar a visualização de seus comportamentos.
+
+## Análise não-paramétrica
+
+### Estimador de Kaplan-Meier
+
+A função de sobrevivência representa a probabilidade de um paciente sobreviver além de um determinado tempo. Neste trabalho, não será assumida uma distribuição de probabilidade específica para o tempo até o evento, sendo necessária a estimação dessa função a partir dos dados.
+
+Para isso, utilizaremos o estimador de Kaplan-Meier, que calcula a sobrevivência ao longo do tempo considerando a ocorrência de eventos (óbitos) e a presença de censura. A estimativa é construída de forma acumulativa, com base nas proporções de pacientes que sobrevivem em cada instante observado.
+
+Esse estimador possui boas propriedades: é o estimador de máxima verossimilhança da função de sobrevivência , sendo consistente. Além disso, na ausência de censura, ele se reduz à função de sobrevivência empírica.
+
+## Análise não-paramétrica
+
+### **Intervalos de Confiança para** sobrevivência
+
+Como o estimador de Kaplan-Meier é um estimador de máxima verossimilhança para a função de sobrevivência, é possível construir intervalos de confiança para essa função.
+
+Um intervalo de confiança de 100(1−α)% pode ser obtido a partir do estimador pontual, utilizando o erro padrão (derivado da variância do estimador) e o quantil da distribuição normal.
+
+Para obter intervalos mais adequados — garantindo que os limites permaneçam no intervalo (0,1) — aplicamos a transformação log-log.
+
+## Análise não-paramétrica
+
+### Percentis
+
+Como o estimador de Kaplan-Meier gera uma função em escada (descontínua), os percentis são obtidos identificando o primeiro tempo em que a curva de sobrevivência atinge ou fica abaixo da proporção desejada.
+
+No contexto deste estudo, isso significa encontrar o primeiro instante em que a probabilidade estimada de sobrevivência dos pacientes cai até o nível correspondente ao percentil de interesse. Por exemplo, o tempo mediano de sobrevivência corresponde ao momento em que a curva atinge 50%.
+
+## Análise não-paramétrica
+
+### Teste de Log-Rank
+
+O teste de Log-Rank é utilizado para comparar curvas de sobrevivência entre diferentes grupos, verificando se há diferenças ao longo do tempo. Em outras palavras, ele avalia se os grupos apresentam comportamentos semelhantes de sobrevivência ou se pelo menos um deles se diferencia dos demais.
+
+No contexto deste estudo, os pacientes podem ser divididos em grupos com base em características clínicas, como uso de suporte ECMO ou ventilação mecânica. Assim, o teste permite identificar se essas condições estão associadas a diferenças na sobrevida após o transplante.
+
+O teste de Peto-Peto é semelhante ao Log-Rank, porém dá mais peso às diferenças que ocorrem no início do acompanhamento. Por isso, é mais indicado quando o interesse está em identificar diferenças precoces entre os grupos, como no período logo após o transplante.
+
+## Análise não-paramétrica
+
+### **Holm-Bonferroni**
+
+Quando um teste global, como o Log-Rank ou o Peto-Peto, indica diferença entre os grupos, é necessário identificar quais grupos, de fato, se diferenciam. Para isso, utiliza-se o procedimento de Holm-Bonferroni, que realiza comparações par a par com ajuste no nível de significância, controlando o erro do tipo I — ou seja, reduzindo a chance de concluir que existe diferença quando, na verdade, não existe.
+
+Esse procedimento consiste em ordenar os p-valores das comparações e testá-los sequencialmente com critérios mais rigorosos, garantindo que o erro global da análise seja controlado.
+
+No contexto deste estudo, isso permite identificar, por exemplo, quais grupos de pacientes (como com ou sem ECMO, ou com e sem ventilação mecânica) apresentam diferenças significativas na sobrevida após o transplante.
+
+# Resultados {data-background-image="Capa.png" style="text-align:center"}
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(survival)
+library(ggsurvfit)
+library(muhaz)
+library(survRM2)
+library(coin)
+library(flexsurv)
+library(reslife)
+library(knitr)
+library(kableExtra)
+
+base=read_xlsx(path = "transplante.xlsx") 
+```
+
+
+
+## Medidas resumos para variaveis qualitativas {.scrollable}
+
+::: panel-tabset
+### Ventilação Mecânica
+
+
+
+```{r}
+tabela <- base |>
+  mutate(
+    ventilator_support = if_else(ventilator_support == 1, "Sim", "Não")
+  ) |>
+  count(ventilator_support, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      ventilator_support = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("Ventilação Mecânica", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+
+base |>
+  mutate(
+    ventilator_support = if_else(ventilator_support == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = ventilator_support)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Uso de ventilação mecânica antes do transplante",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Suporte ECMO
+
+
+
+```{r}
+tabela <- base |>
+  mutate(
+    ecmo_support = if_else(ecmo_support == 1, "Sim", "Não")
+  ) |>
+  count(ecmo_support, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      ecmo_support = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("ECMO", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    ecmo_support = if_else(ecmo_support == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = ecmo_support)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Uso ECMO do transplante",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+
+
+
+### Incompatibilidade sanguínea
+
+
+
+```{r}
+tabela <- base |>
+  mutate(
+    donor_recipient_blood_mismatch = if_else(donor_recipient_blood_mismatch == 0, "Compatível", "Incompatívo")
+  ) |>
+  count(donor_recipient_blood_mismatch, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      donor_recipient_blood_mismatch = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("Incompatibilidade sanguínea", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    donor_recipient_blood_mismatch = if_else(donor_recipient_blood_mismatch == 0, "Compatível", "Incompatívo")
+  ) |>
+  ggplot(aes(x = donor_recipient_blood_mismatch)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Incompatibilidade sanguínea?",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+
+
+
+### Cirugia anterior
+
+
+
+```{r}
+tabela <- base |>
+  mutate(
+    previous_surgery = if_else(previous_surgery == 1, "Sim", "Não")
+  ) |>
+  count(previous_surgery, name = "Contagem") |>
+  mutate(
+    Proporcao = (Contagem / sum(Contagem)) *100
+  )
+
+# adicionando linha de total
+tabela_total <- tabela |>
+  bind_rows(
+    tibble(
+      previous_surgery = "Total",
+      Contagem = sum(tabela$Contagem),
+      Proporcao = sum(tabela$Proporcao)
+    )
+  )
+
+# exibindo com kable
+tabela_total |>
+  kable(
+    col.names = c("ECMO", "Contagem", "Proporção"),
+    digits = 2
+  )
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+base |>
+  mutate(
+    previous_surgery = if_else(previous_surgery == 1, "Sim", "Não")
+  ) |>
+  ggplot(aes(x = previous_surgery)) + 
+  geom_bar(fill="skyblue") +
+  labs(
+    x = "Fez cirurgia antes?",
+    y = "Contagem"
+  ) +
+  theme_classic(base_size = 16)
+```
+
+
+:::
+
+## Medidas resumos para variaveis quatintativas {.scrollable}
+
+::: panel-tabset
+### Idade do Receptor
+
+
+
+```{r}
+tabela_resumo <- base |>
+  summarise(
+    Min= min(recipient_age, na.rm = TRUE),
+    Média = mean(recipient_age, na.rm = TRUE),
+    `1º Quartil` = quantile(recipient_age, 0.25, na.rm = TRUE),
+    Mediana = median(recipient_age, na.rm = TRUE),
+    `3º Quartil` = quantile(recipient_age, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(recipient_age), decreasing = TRUE)[1])),
+    Max= max(recipient_age, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=recipient_age))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Idade do Receptor")+
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Idade do Doador
+
+
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(donor_age, na.rm = TRUE),
+    Média = mean(donor_age, na.rm = TRUE),
+    `1º Quartil` = quantile(donor_age, 0.25, na.rm = TRUE),
+    Mediana = median(donor_age, na.rm = TRUE),
+    `3º Quartil` = quantile(donor_age, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(donor_age), decreasing = TRUE)[1])),
+    Max= max(donor_age, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=donor_age))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Idade do Doador")+
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Peso do Receptor
+
+
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(weight_kg, na.rm = TRUE),
+    Média = mean(weight_kg, na.rm = TRUE),
+    `1º Quartil` = quantile(weight_kg, 0.25, na.rm = TRUE),
+    Mediana = median(weight_kg, na.rm = TRUE),
+    `3º Quartil` = quantile(weight_kg, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(weight_kg), decreasing = TRUE)[1])),
+    Max= max(weight_kg, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=weight_kg))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Peso do Receptor")+
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Nível de Creatinina
+
+
+
+```{r}
+tabela_resumo <- base |>
+  summarise(
+    Min= min(creatinine, na.rm = TRUE),
+    Média = mean(creatinine, na.rm = TRUE),
+    `1º Quartil` = quantile(creatinine, 0.25, na.rm = TRUE),
+    Mediana = median(creatinine, na.rm = TRUE),
+    `3º Quartil` = quantile(creatinine, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(creatinine), decreasing = TRUE)[1])),
+    Max= max(creatinine, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=creatinine))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Nível de Creatinina")+
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Nível de Bilirrubina
+
+
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(bilirubin, na.rm = TRUE),
+    Média = mean(bilirubin, na.rm = TRUE),
+    `1º Quartil` = quantile(bilirubin, 0.25, na.rm = TRUE),
+    Mediana = median(bilirubin, na.rm = TRUE),
+    `3º Quartil` = quantile(bilirubin, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(bilirubin), decreasing = TRUE)[1])),
+    Max= max(bilirubin, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=bilirubin))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Nível de Bilirrubina")+
+  theme_classic(base_size = 16)
+
+```
+
+
+
+### Tempo de Isquemia
+
+
+
+```{r}
+
+tabela_resumo <- base |>
+  summarise(
+    Min= min(ischemic_time_hours, na.rm = TRUE),
+    Média = mean(ischemic_time_hours, na.rm = TRUE),
+    `1º Quartil` = quantile(ischemic_time_hours, 0.25, na.rm = TRUE),
+    Mediana = median(ischemic_time_hours, na.rm = TRUE),
+    `3º Quartil` = quantile(ischemic_time_hours, 0.75, na.rm = TRUE),
+    Moda = as.numeric(names(sort(table(ischemic_time_hours), decreasing = TRUE)[1])),
+    Max= max(ischemic_time_hours, na.rm = TRUE)
+  )
+
+tabela_resumo |>
+  kable(digits = 2)
+
+```
+
+
+
+<br><br>
+
+
+
+```{r fig.align='center'}
+
+base |> 
+  ggplot(aes(y=ischemic_time_hours))+
+  geom_boxplot(fill="skyblue")+
+  labs(y= "Tempo de Isquemia  (Horas)",
+       x = NULL)+
+  theme_classic(base_size = 16)
+```
+
+
+:::
+
+## Comparação de Curvas {.scrollable}
+
+
+
+```{r}
+base= base |> 
+  rename(tempos=observed_time_years,
+         cens=event)
+
+base <- base |>
+  mutate(
+    ventilator_support2 = factor(
+      ventilator_support,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    ),
+    ecmo_support2=factor(
+      ecmo_support,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    ),
+    donor_recipient_blood_mismatch2 = factor(
+      donor_recipient_blood_mismatch,
+      levels = c(0, 1),
+      labels = c("Compatível", "Incompatívo")
+    ),
+    previous_surgery2= factor(
+      previous_surgery,
+      levels = c(0, 1),
+      labels = c("Não", "Sim")
+    )
+  )
+```
+
+
+
+::: panel-tabset
+### Geral
+
+
+
+```{r fig.align='center'}
+ekm1<- survfit2(data=base,
+                formula = Surv(tempos,cens)~1,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm1, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "red")+
+  add_quantile(y_value = 0.5)+
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+
+
+### Ventilação Mecânica
+
+
+
+```{r fig.align='center'}
+ekm2<- survfit2(data=base,
+                formula = Surv(tempos,cens)~ventilator_support2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm2, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+A=survdiff(Surv(tempos,cens)~ventilator_support2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(ventilator_support2),type="Peto-Peto", data = base)
+
+format_p <- function(p) {
+  if (p < 0.001) {
+    "< 0.001"
+  } else {
+    sprintf("%.3f", p)
+  }
+}
+
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+```
+
+
+
+### Suporte ECM0
+
+
+
+```{r fig.align='center'}
+ekm3<- survfit2(data=base,
+                formula = Surv(tempos,cens)~ecmo_support2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm3, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~ecmo_support2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(ecmo_support2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+
+
+
+### Incompatibilidade sanguinea
+
+
+
+```{r fig.align='center'}
+ekm4<- survfit2(data=base,
+                formula = Surv(tempos,cens)~donor_recipient_blood_mismatch2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm4, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~donor_recipient_blood_mismatch2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(donor_recipient_blood_mismatch2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+
+
+
+### Cirurgia anterior
+
+
+
+```{r fig.align='center'}
+ekm5<- survfit2(data=base,
+                formula = Surv(tempos,cens)~previous_surgery2,
+                conf.type = "log-log", 
+                conf.int=0.95)
+
+
+ggsurvfit(ekm5, linewidth = 1.2) +
+  add_confidence_interval() +
+  add_censor_mark(size = 2, alpha = 1)+
+  add_risktable() +
+  scale_ggsurvfit() +
+  labs(x = "Tempo (anos)",
+       y = "Sobrevivência estimada") +
+  theme_classic(base_size=16)
+```
+
+```{r echo=FALSE, results='asis'}
+
+A=survdiff(Surv(tempos,cens)~previous_surgery2, data=base)
+
+B=logrank_test(Surv(tempos,cens)~factor(previous_surgery2),type="Peto-Peto", data = base)
+
+cat(paste0(
+  "<div style='text-align: center; font-size: 24px;'>",
+  "<b>Teste Log-Rank:</b> p = ", format_p(A$pvalue), "<br><br>",
+  "<b>Teste Peto-Peto:</b> p = ", format_p(pvalue(B)),
+  "</div>"
+))
+
+```
+
+
+:::
+
+# Conclusão Não Paramétrica {data-background-image="Capa.png" style="text-align:center"}
+
+## **Conclusão**
+
+-   Aproximadamente **50% dos pacientes sobrevivem até cerca de 4 anos** após o transplante.
+
+-   O uso de **ventilação mecânica** está associado a diferenças significativas na sobrevivência.
+
+-   O uso de **suporte ECMO** também apresenta associação com a sobrevida dos pacientes.
+
+-   A **incompatibilidade sanguínea** entre doador e receptor impacta negativamente a sobrevivência.
+
+-   Não foram encontradas evidências de que **cirurgias prévias** influenciem significativamente a sobrevida.
+
+# Estimação Paramétrica sem covariáveis {data-background-image="Capa.png" style="text-align:center"}
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+
+ajuste_exp<-flexsurvreg(Surv(tempos, cens) ~ 1, dist = "exp", data=base)
+
+ajuste_wei<-flexsurvreg(Surv(tempos, cens) ~ 1, dist = "weibull", data=base)
+
+ajuste_lognorm<-flexsurvreg(Surv(tempos, cens) ~ 1, dist = "lnorm", data=base)
+
+ajuste_gama<-flexsurvreg(Surv(tempos, cens) ~ 1, dist = "gamma", data=base)
+
+ajuste_gengama<-flexsurvreg(Surv(tempos, cens) ~ 1, dist = "gengamma.orig", data=base)
+
+```
+
+
+
+## Modelos Paramétrica sem covariáveis
+
+-   Para esta etapa, serão ajustados modelos paramétricos sem considerar variáveis explicativas (covariáveis).
+
+-   Serão avaliados os modelos **Exponencial, Weibull, Log-Normal, Gama e Gama Generalizada**.
+
+-   Para identificar o modelo com melhor ajuste aos dados, serão utilizados os seguintes métodos:
+
+    -   Comparação gráfica com o estimador de Kaplan-Meier;
+
+    -   Método da linearização;
+
+    -   Critérios de informação AIC e BIC;
+
+    -   Teste da Razão de Verossimilhanças (TRV).
+
+## Ajuste dos modelos {.scrollable}
+
+::: panel-tabset
+### Exponencial
+
+Na distribuição Exponencial, a densidade é determinada por um único parâmetro de taxa (α), que controla a velocidade de ocorrência dos eventos ao longo do tempo.
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Mean_exp <- summary(ajuste_exp, type = "mean", cl = 0.95, se = TRUE)
+Median_exp <- summary(ajuste_exp, type = "median", cl = 0.95, se = TRUE)
+
+alpha <- round(ajuste_exp$res["rate","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Exponencial</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>α (Taxa)</b></td><td>", alpha, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_exp[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_exp[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+```{r fig.align='center'}
+
+plot(ajuste_exp,xlab="Tempos (Anos)",ylab = expression(hat(S)(t)))
+
+plot(ajuste_exp,xlab="Tempos (Anos)",ylab = expression(hat(lambda)(t)),type="hazard")
+
+plot(ajuste_exp,xlab="Tempos (Anos)",ylab = expression(hat(Lambda)(t)),type="cumhaz")
+
+```
+
+
+
+### Weibull
+
+Na distribuição Weibull, a densidade é determinada pelos parâmetros de escala (κ) e forma (γ), que controlam, respectivamente, a escala temporal e o comportamento da taxa de ocorrência dos eventos.
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Mean_wei <- summary(ajuste_wei, type = "mean", cl = 0.95, se = TRUE)
+Median_wei <- summary(ajuste_wei, type = "median", cl = 0.95, se = TRUE)
+
+kappa <- round(ajuste_wei$res["scale","est"], 4)
+gamma <- round(ajuste_wei$res["shape","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Weibull</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>κ (Escala)</b></td><td>", kappa, "</td></tr>",
+  "<tr><td><b>γ (Forma)</b></td><td>", gamma, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_wei[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_wei[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+```{r fig.align='center'}
+
+plot(ajuste_wei,xlab="Tempos (Anos)",ylab = expression(hat(S)(t)))
+
+plot(ajuste_wei,xlab="Tempos (Anos)",ylab = expression(hat(lambda)(t)),type="hazard")
+
+plot(ajuste_wei,xlab="Tempos (Anos)",ylab = expression(hat(Lambda)(t)),type="cumhaz")
+
+```
+
+
+
+### Log-Normal
+
+Na distribuição Log-Normal, a densidade é determinada pelos parâmetros μ e σ, que controlam, respectivamente, a posição e a dispersão da distribuição na escala logarítmica.
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Mean_lognorm <- summary(ajuste_lognorm, type = "mean", cl = 0.95, se = TRUE)
+Median_lognorm <- summary(ajuste_lognorm, type = "median", cl = 0.95, se = TRUE)
+
+mu <- round(ajuste_lognorm$res["meanlog","est"], 4)
+sigma <- round(ajuste_lognorm$res["sdlog","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Log-Normal</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>μ (Posição)</b></td><td>", mu, "</td></tr>",
+  "<tr><td><b>σ (Dispersão)</b></td><td>", sigma, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_lognorm[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_lognorm[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+```{r fig.align='center'}
+
+plot(ajuste_lognorm,xlab="Tempos (Anos)",ylab = expression(hat(S)(t)))
+
+plot(ajuste_lognorm,xlab="Tempos (Anos)",ylab = expression(hat(lambda)(t)),type="hazard")
+
+plot(ajuste_lognorm,xlab="Tempos (Anos)",ylab = expression(hat(Lambda)(t)),type="cumhaz")
+
+```
+
+
+
+### Gama
+
+Na distribuição Gama, a densidade é determinada pelos parâmetros de forma (α) e taxa (β), responsáveis pelo formato da distribuição e pela velocidade de ocorrência dos eventos.
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Mean_gama <- summary(ajuste_gama, type = "mean", cl = 0.95, se = TRUE)
+Median_gama <- summary(ajuste_gama, type = "median", cl = 0.95, se = TRUE)
+
+alpha <- round(ajuste_gama$res["shape","est"], 4)
+beta <- round(ajuste_gama$res["rate","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Gama</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>α (Forma)</b></td><td>", alpha, "</td></tr>",
+  "<tr><td><b>β (Taxa)</b></td><td>", beta, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_gama[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_gama[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+```{r fig.align='center'}
+
+plot(ajuste_gama,xlab="Tempos (Anos)",ylab = expression(hat(S)(t)))
+
+plot(ajuste_gama,xlab="Tempos (Anos)",ylab = expression(hat(lambda)(t)),type="hazard")
+
+plot(ajuste_gama,xlab="Tempos (Anos)",ylab = expression(hat(Lambda)(t)),type="cumhaz")
+
+```
+
+
+
+### Gama Generalizada
+
+Na distribuição Gama Generalizada, a densidade é determinada pelos parâmetros de escala (a), forma (b) e forma adicional (k), que controlam a escala temporal e a flexibilidade do formato da distribuição.
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Mean_gengama <- summary(ajuste_gengama, type = "mean", cl = 0.95, se = TRUE)
+Median_gengama <- summary(ajuste_gengama, type = "median", cl = 0.95, se = TRUE)
+
+a <- round(ajuste_gengama$res["scale","est"], 4)
+b <- round(ajuste_gengama$res["shape","est"], 4)
+k <- round(ajuste_gengama$res["k","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Gama Generalizada</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>a (Escala)</b></td><td>", a, "</td></tr>",
+  "<tr><td><b>b (Forma)</b></td><td>", b, "</td></tr>",
+  "<tr><td><b>k (Forma adicional)</b></td><td>", k, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_gengama[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_gengama[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+```{r fig.align='center'}
+
+plot(ajuste_gengama,xlab="Tempos (Anos)",ylab = expression(hat(S)(t)))
+
+plot(ajuste_gengama,xlab="Tempos (Anos)",ylab = expression(hat(lambda)(t)),type="hazard")
+
+plot(ajuste_gengama,xlab="Tempos (Anos)",ylab = expression(hat(Lambda)(t)),type="cumhaz")
+
+```
+
+
+
+### Comparação das curvas
+
+
+
+```{r fig.align='center'}
+
+plot(ajuste_exp,xlab="Tempos (meses)",ylab = expression(hat(S)(t)),lwd.ci=0, lty.ci=0, col="red")
+lines(ajuste_wei,lwd.ci=0, lty.ci=0, col="blue")
+lines(ajuste_lognorm,lwd.ci=0, lty.ci=0, col="green")
+lines(ajuste_gama,lwd.ci=0, lty.ci=0, col="orange")
+lines(ajuste_gengama,lwd.ci=0, lty.ci=0, col="purple")
+legend("bottomleft",legend=c("Exponencial","Weibull","Log-Normal","Gama","Gama-Generalizada"),fill=c("red","blue","green","orange","purple"), cex = 0.6)
+
+plot(ajuste_exp,xlab="Tempos (meses)",ylab = expression(hat(lambda)(t)),lwd.ci=0, lty.ci=0, col="red",type="hazard")
+lines(ajuste_wei,lwd.ci=0, lty.ci=0, col="blue",type="hazard")
+lines(ajuste_lognorm,lwd.ci=0, lty.ci=0, col="green",type="hazard")
+lines(ajuste_gama,lwd.ci=0, lty.ci=0, col="orange",type="hazard")
+lines(ajuste_gengama,lwd.ci=0, lty.ci=0, col="purple",type="hazard")
+legend("topleft",legend=c("Exponencial","Weibull","Log-Normal","Gama","Gama-Generalizada"),fill=c("red","blue","green","orange","purple"), cex = 0.6)
+
+plot(ajuste_exp,xlab="Tempos (meses)",ylab = expression(hat(Lambda)(t)),lwd.ci=0, lty.ci=0, col="red",type="cumhaz")
+lines(ajuste_wei,lwd.ci=0, lty.ci=0, col="blue",type="cumhaz")
+lines(ajuste_lognorm,lwd.ci=0, lty.ci=0, col="green",type="cumhaz")
+lines(ajuste_gama,lwd.ci=0, lty.ci=0, col="orange",type="cumhaz")
+lines(ajuste_gengama,lwd.ci=0, lty.ci=0, col="purple",type="cumhaz")
+legend("topleft",legend=c("Exponencial","Weibull","Log-Normal","Gama","Gama-Generalizada"),fill=c("red","blue","green","orange","purple"))
+
+```
+
+```{r echo=FALSE, results='asis'}
+
+Resumo <- data.frame(
+  Distribuição = c(
+    "Exponencial",
+    "Weibull",
+    "Log-Normal",
+    "Gama",
+    "Gama Generalizada"
+  ),
+  Média = round(c(
+    Mean_exp[[1]]$est,
+    Mean_wei[[1]]$est,
+    Mean_lognorm[[1]]$est,
+    Mean_gama[[1]]$est,
+    Mean_gengama[[1]]$est
+  ), 2),
+  Mediana = round(c(
+    Median_exp[[1]]$est,
+    Median_wei[[1]]$est,
+    Median_lognorm[[1]]$est,
+    Median_gama[[1]]$est,
+    Median_gengama[[1]]$est
+  ), 2)
+)
+
+library(knitr)
+
+kable(
+  Resumo,
+  align = c("l", "c", "c", "c", "c"),
+  digits = c(0, 2, 2, 2, 4),
+  caption = "Resumo das estimativas dos modelos paramétricos"
+)
+
+
+```
+
+
+:::
+
+## Comparação dos Modelos {.scrollable}
+
+::: panel-tabset
+### Método gráfico via Kaplan-Meier
+
+
+
+```{r fig.align='center'}
+
+ekm <- survfit(Surv(tempos,cens)~1, data=base)
+Surv_ekm <- data.frame(ekm$time,ekm$surv)
+colnames(Surv_ekm) <- c("Tempo", "Surv_EKM")
+
+#MÉTODO GRÁFICO: KAPLAN-MEIER
+Surv_pam <- data.frame(summary(ajuste_exp)[[1]][,c(1,2)],
+                       summary(ajuste_wei)[[1]][,2],
+                       summary(ajuste_lognorm)[[1]][,2],
+                       summary(ajuste_gama)[[1]][,2],
+                       summary(ajuste_gengama)[[1]][,2])
+colnames(Surv_pam) <- c("Tempo", "Surv_exp", "Surv_wei", "Surv_lognorm", "Surv_gama", "Surv_gengama")
+
+
+Surv_Final <- merge(Surv_pam,Surv_ekm,by="Tempo",all.x=T)
+
+
+par(mfrow=c(2,3))
+plot(Surv_Final$Surv_EKM, Surv_Final$Surv_exp, 
+     xlab= "S(t): Kaplan-Meier", ylab = "S(t): Exponencial")
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(Surv_Final$Surv_EKM, Surv_Final$Surv_wei, 
+     xlab= "S(t): Kaplan-Meier", ylab = "S(t): Weibull" )
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(Surv_Final$Surv_EKM, Surv_Final$Surv_lognorm, 
+     xlab= "S(t): Kaplan-Meier", ylab = "S(t): LogNormal")
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(Surv_Final$Surv_EKM, Surv_Final$Surv_gama, 
+     xlab= "S(t): Kaplan-Meier", ylab = "S(t): Gama" )
+lines(c(0,1), c(0,1), type="l", lty=1)
+plot(Surv_Final$Surv_EKM, Surv_Final$Surv_gengama, 
+     xlab= "S(t): Kaplan-Meier", ylab = "S(t): Gama Generalizada" )
+lines(c(0,1), c(0,1), type="l", lty=1)
+
+```
+
+
+
+### Método da linearização
+
+
+
+```{r fig.align='center'}
+EixoY_exp = -log(Surv_ekm$Surv_EKM)
+EixoX_exp = Surv_ekm$Tempo
+
+EixoY_wei = log(-log(Surv_ekm$Surv_EKM))
+EixoX_wei = log(Surv_ekm$Tempo)
+
+EixoY_lognorm = qnorm(Surv_ekm$Surv_EKM)
+EixoX_lognorm = log(Surv_ekm$Tempo)
+
+par(mfrow=c(1,3))
+plot(EixoX_exp, EixoY_exp, 
+     xlab = "t",
+     ylab = expression(log(S(t))),
+     main = "Exponencial")
+plot(EixoX_wei, EixoY_wei,
+     xlab = expression(log(t)),
+     ylab = expression(log(-log(S(t)))),
+     main = "Weibull")
+plot(EixoX_lognorm, EixoY_lognorm,
+     xlab = expression(log(t)),
+     ylab = expression(Phi^{-1}(S(t))),
+     main = "Log-Normal")
+
+```
+
+
+
+### Critérios de informação AIC e BIC
+
+
+
+```{r echo=FALSE, results='asis'}
+
+Comparacao <- data.frame(
+  Modelo = c(
+    "Exponencial",
+    "Weibull",
+    "Log-Normal",
+    "Gama",
+    "Gama Generalizada"
+  ),
+  AIC = round(c(
+    ajuste_exp$AIC,
+    ajuste_wei$AIC,
+    ajuste_lognorm$AIC,
+    ajuste_gama$AIC,
+    ajuste_gengama$AIC
+  ), 2),
+  BIC = round(c(
+    ajuste_exp$BIC,
+    ajuste_wei$BIC,
+    ajuste_lognorm$BIC,
+    ajuste_gama$BIC,
+    ajuste_gengama$BIC
+  ), 2)
+)
+
+kable(
+  Comparacao,
+  col.names = c("Modelo", "AIC", "BIC"),
+  align = c("l", "c", "c"),
+  digits = 2,
+  caption = "Comparação dos modelos pelos critérios de informação"
+)
+
+
+```
+
+
+
+### Teste da Razão de Verossimilhanças (TRV)
+
+
+
+```{r echo=FALSE, results='asis'}
+
+format_p <- function(p) {
+  ifelse(p < 0.001, "<0.001", sprintf("%.4f", p))
+}
+
+TRV_exp = 2*(ajuste_gengama$loglik-ajuste_exp$loglik)
+P_valor_exp = pchisq(TRV_exp,2,lower.tail=F)
+TRV_wei = 2*(ajuste_gengama$loglik-ajuste_wei$loglik)
+P_valor_wei = pchisq(TRV_wei,1,lower.tail=F)
+TRV_lognorm = 2*(ajuste_gengama$loglik-ajuste_lognorm$loglik)
+P_valor_lognorm = pchisq(TRV_lognorm,1,lower.tail=F)
+TRV_gama = 2*(ajuste_gengama$loglik-ajuste_gama$loglik)
+P_valor_gama = pchisq(TRV_gama,1,lower.tail=F)
+
+Comparacao_TRV <- data.frame(
+  Modelo = c(
+    "Exponencial",
+    "Weibull",
+    "Log-Normal",
+    "Gama"
+  ),
+  TRV = round(c(
+    TRV_exp,
+    TRV_wei,
+    TRV_lognorm,
+    TRV_gama
+  ), 2),
+  `p-valor` = format_p(c(
+    P_valor_exp,
+    P_valor_wei,
+    P_valor_lognorm,
+    P_valor_gama
+  ))
+)
+
+kable(
+  Comparacao_TRV,
+  align = c("l", "c", "c"),
+  caption = "Comparação dos modelos via TRV (referência: Gama Generalizada)"
+)
+```
+
+
+:::
+
+## Resultado {.scrollable}
+
+Entre os modelos avaliados, a distribuição Gama Generalizada apresentou o melhor desempenho. Esse resultado foi evidenciado pela boa aderência visual à curva de Kaplan-Meier, pelos menores valores dos critérios de informação AIC e BIC e pelos resultados do Teste da Razão de Verossimilhanças, que não indicaram evidências de que modelos mais simples apresentassem ajuste equivalente aos dados.
+
+
+
+```{r fig.align='center'}
+
+t <- seq(min(base$tempos), max(base$tempos), length.out = 100)
+
+S <- summary(ajuste_gengama, t = t, type = "survival")[[1]]
+h <- summary(ajuste_gengama, t = t, type = "hazard")[[1]]
+H <- summary(ajuste_gengama, t = t, type = "cumhaz")[[1]]
+
+df <- rbind(
+  data.frame(t = t, valor = S$est, li = S$lcl, ls = S$ucl, funcao = "S(t)"),
+  data.frame(t = t, valor = h$est, li = h$lcl, ls = h$ucl, funcao = "h(t)"),
+  data.frame(t = t, valor = H$est, li = H$lcl, ls = H$ucl, funcao = "H(t)")
+)
+
+df$funcao <- factor(
+  df$funcao,
+  levels = c("S(t)", "h(t)", "H(t)"),
+  labels = c("S(t)", "lambda(t)", "Lambda(t)")
+)
+
+
+ggplot(df, aes(t, valor, color = funcao, fill = funcao)) +
+  geom_ribbon(aes(ymin = li, ymax = ls), alpha = 0.2, color = NA) +
+  geom_line(size = 1.1) +
+  facet_wrap(~funcao, scales = "free_y", labeller = label_parsed) +
+  labs(x = "Tempo", y = NULL,
+       title = "Funções do Modelo Gama Generalizado") +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "none")
+
+
+```
+
+```{r echo=FALSE, results='asis'}
+
+Mean_gengama <- summary(ajuste_gengama, type = "mean", cl = 0.95, se = TRUE)
+Median_gengama <- summary(ajuste_gengama, type = "median", cl = 0.95, se = TRUE)
+
+a <- round(ajuste_gengama$res["scale","est"], 4)
+b <- round(ajuste_gengama$res["shape","est"], 4)
+k <- round(ajuste_gengama$res["k","est"], 4)
+
+cat(paste0(
+  "<div style='text-align:center;'>",
+  "<h2>Distribuição Gama Generalizada</h2>",
+  "<br>",
+  "<table style='margin:auto; font-size:24px;'>",
+  "<tr><td><b>a (Escala)</b></td><td>", a, "</td></tr>",
+  "<tr><td><b>b (Forma)</b></td><td>", b, "</td></tr>",
+  "<tr><td><b>k (Forma adicional)</b></td><td>", k, "</td></tr>",
+  "<tr><td><b>Tempo Médio</b></td><td>", round(Mean_gengama[[1]]$est,2), " anos</td></tr>",
+  "<tr><td><b>Tempo Mediano</b></td><td>", round(Median_gengama[[1]]$est,2), " anos</td></tr>",
+  "</table>",
+  "</div>"
+))
+
+```
+
+
+
+# Estimação Paramétrica com covariáveis {data-background-image="Capa.png" style="text-align:center"}
+
+## Escolha das covariáveis {.scrollable}
+
+::: panel-tabset
+### Passo a passo
+
+Antes de fazer o passo a passo primeiro fazemos um filtro inicial nas variavies qualitativa, tiramos as que tiveram Teste de peto-peto e Log-Rank falou que não possuem diferença entre os grupos
+
+-   Passo 1 – Seleção Inicial, ajustar modelos com uma covariável por vez e o modelo nulo. Aplicar o Teste da Razão de Verossimilhanças (TRV);
+
+-   Passo 2 – Modelo Múltiplo Inicial, ajustar um modelo com todas as covariáveis selecionadas. Remover uma covariável por vez;
+
+-   Passo 3 – Reavaliação das Exclusões, ajustar o modelo com as covariáveis retidas. Reintroduzir, individualmente, as covariáveis excluídas no Passo 2;
+
+-   Passo 4 – Reavaliação das Variáveis Iniciais. ajustar o modelo obtido no Passo 3. Testar novamente as covariáveis descartadas no Passo 1.
+
+-   Passo 5 – Avaliação de Interações, ajustar o modelo final de efeitos principais. Testar interações duplas entre as covariáveis selecionadas;
+
+### Processo
+
+-   A variável que indicava se o paciente havia sido submetido a cirurgia previamente foi removida no filtro inicial.
+
+-   A variável creatinine foi removida na primeira etapa.
+
+-   Não houve remoção de variáveis na etapa 2.
+
+-   Não foram adicionadas variáveis na etapa 3.
+
+-   Não foram adicionadas variáveis na etapa 4.
+
+-   Nenhuma interação entre variáveis foi selecionada para o modelo final.
+
+### Variáveis do modelo final
+
+As variáveis selecionadas ao final do processo foram:
+
+-   recipient_age
+
+-   weight_kg
+
+-   bilirubin
+
+-   ventilator_support
+
+-   ecmo_support
+
+-   donor_recipient_blood_mismatch
+
+-   ischemic_time_hours
+
+-   donor_age
+
+-   recipient_age_c
+
+-   donor_age_c
+
+-   weight_kg_c
+:::
+
+## Seleção do modelo final {.scrollable}
+
+
+
+```{r}
+ajuste_gengama <- flexsurvreg(
+  data = base,
+  Surv(tempos, cens) ~ recipient_age + weight_kg + bilirubin +
+    ventilator_support + ecmo_support +
+    donor_recipient_blood_mismatch +
+    ischemic_time_hours + donor_age ,
+  dist = "gengamma"
+)
+
+ajuste_exp <- flexsurvreg(
+  data = base,
+  Surv(tempos, cens) ~ recipient_age + weight_kg + bilirubin +
+    ventilator_support + ecmo_support +
+    donor_recipient_blood_mismatch +
+    ischemic_time_hours + donor_age ,
+  dist = "exponential"
+)
+
+ajuste_wei <- flexsurvreg(
+  data = base,
+  Surv(tempos, cens) ~ recipient_age + weight_kg + bilirubin +
+    ventilator_support + ecmo_support +
+    donor_recipient_blood_mismatch +
+    ischemic_time_hours + donor_age ,
+  dist = "weibull"
+)
+
+ajuste_lognorm <- flexsurvreg(
+  data = base,
+  Surv(tempos, cens) ~ recipient_age + weight_kg + bilirubin +
+    ventilator_support + ecmo_support +
+    donor_recipient_blood_mismatch +
+    ischemic_time_hours + donor_age ,
+  dist = "lnorm"
+)
+
+ajuste_gama <- flexsurvreg(
+  data = base,
+  Surv(tempos, cens) ~ recipient_age + weight_kg + bilirubin +
+    ventilator_support + ecmo_support +
+    donor_recipient_blood_mismatch +
+    ischemic_time_hours + donor_age ,
+  dist = "gamma"
+)
+```
+
+
+
+::: panel-tabset
+### AIC e BIC
+
+
+
+```{r}
+Comparacao <- rbind(
+  c(ajuste_gengama$AIC, ajuste_gengama$BIC),
+  c(ajuste_exp$AIC, ajuste_exp$BIC),
+  c(ajuste_wei$AIC, ajuste_wei$BIC),
+  c(ajuste_lognorm$AIC, ajuste_lognorm$BIC),
+  c(ajuste_gama$AIC, ajuste_gama$BIC)
+)
+
+rownames(Comparacao) <- c(
+  "Gama Generalizada",
+  "Exponencial",
+  "Weibull",
+  "LogNormal",
+  "Gama"
+)
+
+colnames(Comparacao) <- c("AIC", "BIC")
+
+knitr::kable(
+  Comparacao,
+  align = c("l", "c", "c"),
+  caption = "Comparação dos modelos paramétricos via AIC e BIC (modelo final)"
+)
+```
+
+
+
+### TRV
+
+
+
+```{r}
+TRV_exp <- 2 * (ajuste_gengama$loglik - ajuste_exp$loglik)
+P_valor_exp <- pchisq(TRV_exp, df = 2, lower.tail = FALSE)
+
+TRV_wei <- 2 * (ajuste_gengama$loglik - ajuste_wei$loglik)
+P_valor_wei <- pchisq(TRV_wei, df = 1, lower.tail = FALSE)
+
+TRV_lognorm <- 2 * (ajuste_gengama$loglik - ajuste_lognorm$loglik)
+P_valor_lognorm <- pchisq(TRV_lognorm, df = 1, lower.tail = FALSE)
+
+TRV_gama <- 2 * (ajuste_gengama$loglik - ajuste_gama$loglik)
+P_valor_gama <- pchisq(TRV_gama, df = 1, lower.tail = FALSE)
+
+TRV <- data.frame(
+  Comparacao = c(
+    "Exponencial x Gama Generalizada",
+    "Weibull x Gama Generalizada",
+    "LogNormal x Gama Generalizada",
+    "Gama x Gama Generalizada"
+  ),
+  TRV = c(TRV_exp, TRV_wei, TRV_lognorm, TRV_gama),
+  P_valor = c(P_valor_exp, P_valor_wei, P_valor_lognorm, P_valor_gama)
+)
+
+knitr::kable(
+  TRV,
+  align = c("l", "c", "c"),
+  caption = "Teste da Razão de Verossimilhança (TRV) comparando modelos ao Gama Generalizada"
+)
+```
+
+
+:::
+
+## Modelo Final {.scrollable}
+
+::: panel-tabset
+### Modelo
+
+Temos, portanto, o seguinte modelo final ajustado.
+
+O tempo de sobrevivência $T$ segue uma Distribuição Gama Generalizada (GG):
+
+$$T \sim GG(\mu,\sigma,Q)$$
+
+$$
+\begin{aligned}
+\mu = \beta_0
+&+ \beta_1 \cdot recipient\_age
++ \beta_2 \cdot weight\_kg
++ \beta_3 \cdot bilirubin
++ \beta_4 \cdot ventilator\_support \\
+&+ \beta_5 \cdot ecmo\_support
++ \beta_6 \cdot donor\_recipient\_blood\_mismatch
++ \beta_7 \cdot ischemic\_time\_hours \\
+&+ \beta_8 \cdot donor\_age
++ \beta_9 \cdot recipient\_age\_c
++ \beta_{10} \cdot donor\_age\_c
++ \beta_{11} \cdot weight\_kg\_c
+\end{aligned}
+$$
+
+Os parâmetros adicionais do modelo são dados por:
+$$ \sigma =0.6486$$
+$$Q = 0.3746$$
+O vetor de $\beta_i$ está descrito na tabela abaixo:
+
+
+
+```{r echo=FALSE, results='asis'}
+
+library(broom)
+
+Tabela_gengama <- tidy(ajuste_gengama)
+Tabela_gengama = Tabela_gengama[-c(2:3),]
+
+knitr::kable(
+  Tabela_gengama,
+  digits = 4,
+  align = c("l", "c", "c", "c", "c"),
+  caption = "Coeficientes do modelo Gama Generalizada"
+)
+```
+
+```{r fig.align='center'}
+
+t <- seq(min(base$tempos), max(base$tempos), length.out = 100)
+
+S <- summary(ajuste_gengama, t = t, type = "survival")[[1]]
+h <- summary(ajuste_gengama, t = t, type = "hazard")[[1]]
+H <- summary(ajuste_gengama, t = t, type = "cumhaz")[[1]]
+
+df <- rbind(
+  data.frame(t = t, valor = S$est, li = S$lcl, ls = S$ucl, funcao = "S(t)"),
+  data.frame(t = t, valor = h$est, li = h$lcl, ls = h$ucl, funcao = "h(t)"),
+  data.frame(t = t, valor = H$est, li = H$lcl, ls = H$ucl, funcao = "H(t)")
+)
+
+df$funcao <- factor(
+  df$funcao,
+  levels = c("S(t)", "h(t)", "H(t)"),
+  labels = c("S(t)", "lambda(t)", "Lambda(t)")
+)
+
+
+ggplot(df, aes(t, valor, color = funcao, fill = funcao)) +
+  geom_ribbon(aes(ymin = li, ymax = ls), alpha = 0.2, color = NA) +
+  geom_line(size = 1.1) +
+  facet_wrap(~funcao, scales = "free_y", labeller = label_parsed) +
+  labs(x = "Tempo", y = NULL,
+       title = "Funções do Modelo Gama Generalizado") +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "none")
+
+
+```
+
+```{r echo=FALSE, results='asis'}
+
+library(broom)
+
+Tabela_gengama <- tidy(ajuste_gengama)
+
+knitr::kable(
+  Tabela_gengama,
+  digits = 4,
+  align = c("l", "c", "c", "c", "c"),
+  caption = "Coeficientes do modelo Gama Generalizada"
+)
+```
+
+
+
+### Resíduos
+
+
+
+```{r fig.align='center'}
+
+ResiduoCS = coxsnell_flexsurvreg(ajuste_gengama)$est
+par(mfrow=c(1,2))
+ekm<- survfit (Surv(ResiduoCS,base$cens)~1,type="kaplan-meier")
+plot(ekm, fun="cumhaz",xlab="Resíduos de Cox-Snell",ylab="Função de risco acumulado")
+abline(0, 1, col="red")
+
+plot(ekm, xlab="Resíduos de Cox-Snell",ylab="Função de sobrevivência")
+ResiduoCS<-sort(ResiduoCS)
+exp1<-exp(-ResiduoCS)
+points(ResiduoCS,exp1, col="red",type="l")
+
+
+
+# survival = NULL
+# quantilic = NULL
+# cdf = NULL
+# Residuo = NULL
+# for(i in 1:nrow(base)){
+#   survival[i] <- summary(
+#     ajuste_gengama,
+#     type = "survival",
+#     newdata = base[i, , drop = FALSE],
+#     t = base$tempo[i]
+#   )[[1]]$est
+#   cdf[i] = 1-survival[i]
+#   if(base$cens[i] == 1){
+#   quantilic[i] <- cdf[i]
+# } else {
+#   quantilic[i] <- runif(1, min = cdf[i], max = 1)
+# }
+# Residuo[i] <- qnorm(quantilic[i])
+# }
+# 
+# ggplot(data.frame(Residuo), aes(sample=Residuo)) +
+#     stat_qq_band(fill="lightblue") +
+#     stat_qq_line() +
+#     stat_qq_point() +
+#     xlab("Quantis Teóricos")+
+#     ylab("Quantis Amostrais")+
+#     theme_bw() +
+#     theme(text = element_text(size = 14))
+
+
+```
+
+
+
+### Interpretação
+
+-   **recipient_age**: cada aumento está associado a uma redução de aproximadamente **2,3%** no tempo de sobrevivência
+
+-    **weight_kg**: aumento de aproximadamente **1,6%** no tempo de sobrevivência
+
+-    **bilirubin**: aumento está associado a uma redução de aproximadamente **12,3%** no tempo de sobrevivência
+
+-    **ventilator_support**: pacientes sob ventilação mecânica apresentam redução de aproximadamente **53,5%** no tempo de sobrevivência
+
+-    **ecmo_support**: redução de aproximadamente **65,2%** no tempo de sobrevivência
+
+-    **donor_recipient_blood_mismatch**: redução de aproximadamente **23,2%** no tempo de sobrevivência
+
+-    **ischemic_time_hours**: redução de aproximadamente **18,0%** no tempo de sobrevivência
+
+-    **donor_age**: cada aumento na idade do doador está associado a redução de aproximadamente **7,4%** no tempo de sobrevivência
+:::
+

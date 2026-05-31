@@ -10,7 +10,6 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Paulo Victor Zava Pereira (paulozava@id.uff.br)  ">
-  <meta name="dcterms.date" content="2026-01-05">
   <title>Análise de Sobrevivência e Confiabilidade</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -130,7 +129,7 @@
 
 <section id="title-slide" data-background-image="Capa.png" data-background-size="cover" class="quarto-title-block center">
   <h1 class="title"><strong>Análise de Sobrevivência e Confiabilidade</strong></h1>
-  <p class="subtitle"><strong>Parte 1: Análise não paramétrica</strong></p>
+  <p class="subtitle"><strong>Parte 2: Análise paramétrica</strong></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -143,7 +142,7 @@ Paulo Victor Zava Pereira (<a href="mailto:paulozava@id.uff.br" class="email">pa
     </div>
 </div>
 
-  <p class="date">01/05/2026</p>
+  <p class="date">31/05/2026</p>
 </section>
 <section>
 <section id="introdução" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
@@ -806,11 +805,11 @@ Paulo Victor Zava Pereira (<a href="mailto:paulozava@id.uff.br" class="email">pa
 </div>
 </section></section>
 <section>
-<section id="conclusão" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
-<h1>Conclusão</h1>
+<section id="conclusão-não-paramétrica" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
+<h1>Conclusão Não Paramétrica</h1>
 
 </section>
-<section id="conclusão-1" class="slide level2">
+<section id="conclusão" class="slide level2">
 <h2><strong>Conclusão</strong></h2>
 <ul>
 <li><p>Aproximadamente <strong>50% dos pacientes sobrevivem até cerca de 4 anos</strong> após o transplante.</p></li>
@@ -819,14 +818,971 @@ Paulo Victor Zava Pereira (<a href="mailto:paulozava@id.uff.br" class="email">pa
 <li><p>A <strong>incompatibilidade sanguínea</strong> entre doador e receptor impacta negativamente a sobrevivência.</p></li>
 <li><p>Não foram encontradas evidências de que <strong>cirurgias prévias</strong> influenciem significativamente a sobrevida.</p></li>
 </ul>
+</section></section>
+<section>
+<section id="estimação-paramétrica-sem-covariáveis" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
+<h1>Estimação Paramétrica sem covariáveis</h1>
+
 </section>
-<section id="possíveis-melhorias" class="slide level2">
-<h2><strong>Possíveis Melhorias</strong></h2>
+<section id="modelos-paramétrica-sem-covariáveis" class="slide level2">
+<h2>Modelos Paramétrica sem covariáveis</h2>
 <ul>
-<li><p>Explorar com mais profundidade as <strong>variáveis quantitativas</strong> na análise de sobrevivência.</p></li>
-<li><p>Avaliar o uso de <strong>modelos paramétricos</strong>, buscando comparar resultados com a abordagem não paramétrica.</p></li>
-<li><p>Investigar possíveis <strong>interações entre variáveis clínicas</strong>.</p></li>
+<li><p>Para esta etapa, serão ajustados modelos paramétricos sem considerar variáveis explicativas (covariáveis).</p></li>
+<li><p>Serão avaliados os modelos <strong>Exponencial, Weibull, Log-Normal, Gama e Gama Generalizada</strong>.</p></li>
+<li><p>Para identificar o modelo com melhor ajuste aos dados, serão utilizados os seguintes métodos:</p>
+<ul>
+<li><p>Comparação gráfica com o estimador de Kaplan-Meier;</p></li>
+<li><p>Método da linearização;</p></li>
+<li><p>Critérios de informação AIC e BIC;</p></li>
+<li><p>Teste da Razão de Verossimilhanças (TRV).</p></li>
+</ul></li>
 </ul>
+</section>
+<section id="ajuste-dos-modelos" class="slide level2 scrollable">
+<h2>Ajuste dos modelos</h2>
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Exponencial</a></li><li><a href="#tabset-4-2">Weibull</a></li><li><a href="#tabset-4-3">Log-Normal</a></li><li><a href="#tabset-4-4">Gama</a></li><li><a href="#tabset-4-5">Gama Generalizada</a></li><li><a href="#tabset-4-6">Comparação das curvas</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<p>Na distribuição Exponencial, a densidade é determinada por um único parâmetro de taxa (α), que controla a velocidade de ocorrência dos eventos ao longo do tempo.</p>
+<div style="text-align:center;">
+<h2>
+Distribuição Exponencial
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>α (Taxa)</b>
+</td>
+<td>
+0.1781
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+5.62 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.89 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2">
+<p>Na distribuição Weibull, a densidade é determinada pelos parâmetros de escala (κ) e forma (γ), que controlam, respectivamente, a escala temporal e o comportamento da taxa de ocorrência dos eventos.</p>
+<div style="text-align:center;">
+<h2>
+Distribuição Weibull
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>κ (Escala)</b>
+</td>
+<td>
+5.5328
+</td>
+</tr>
+<tr>
+<td>
+<b>γ (Forma)</b>
+</td>
+<td>
+1.0907
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+5.35 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.95 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-36-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-36-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-36-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-3">
+<p>Na distribuição Log-Normal, a densidade é determinada pelos parâmetros μ e σ, que controlam, respectivamente, a posição e a dispersão da distribuição na escala logarítmica.</p>
+<div style="text-align:center;">
+<h2>
+Distribuição Log-Normal
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>μ (Posição)</b>
+</td>
+<td>
+1.2881
+</td>
+</tr>
+<tr>
+<td>
+<b>σ (Dispersão)</b>
+</td>
+<td>
+1.25
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+7.92 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.63 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-38-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-38-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-38-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-4">
+<p>Na distribuição Gama, a densidade é determinada pelos parâmetros de forma (α) e taxa (β), responsáveis pelo formato da distribuição e pela velocidade de ocorrência dos eventos.</p>
+<div style="text-align:center;">
+<h2>
+Distribuição Gama
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>α (Forma)</b>
+</td>
+<td>
+1.167
+</td>
+</tr>
+<tr>
+<td>
+<b>β (Taxa)</b>
+</td>
+<td>
+0.2176
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+5.36 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.93 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-40-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-5">
+<p>Na distribuição Gama Generalizada, a densidade é determinada pelos parâmetros de escala (a), forma (b) e forma adicional (k), que controlam a escala temporal e a flexibilidade do formato da distribuição.</p>
+<div style="text-align:center;">
+<h2>
+Distribuição Gama Generalizada
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>a (Escala)</b>
+</td>
+<td>
+0.1273
+</td>
+</tr>
+<tr>
+<td>
+<b>b (Forma)</b>
+</td>
+<td>
+0.4265
+</td>
+</tr>
+<tr>
+<td>
+<b>k (Forma adicional)</b>
+</td>
+<td>
+4.5593
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+6.06 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.75 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-42-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-42-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-42-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-6">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-43-3.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<table class="caption-top">
+<caption>Resumo das estimativas dos modelos paramétricos</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Distribuição</th>
+<th style="text-align: center;">Média</th>
+<th style="text-align: center;">Mediana</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Exponencial</td>
+<td style="text-align: center;">5.62</td>
+<td style="text-align: center;">3.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Weibull</td>
+<td style="text-align: center;">5.35</td>
+<td style="text-align: center;">3.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Log-Normal</td>
+<td style="text-align: center;">7.92</td>
+<td style="text-align: center;">3.63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gama</td>
+<td style="text-align: center;">5.36</td>
+<td style="text-align: center;">3.93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gama Generalizada</td>
+<td style="text-align: center;">6.06</td>
+<td style="text-align: center;">3.75</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="comparação-dos-modelos" class="slide level2 scrollable">
+<h2>Comparação dos Modelos</h2>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Método gráfico via Kaplan-Meier</a></li><li><a href="#tabset-5-2">Método da linearização</a></li><li><a href="#tabset-5-3">Critérios de informação AIC e BIC</a></li><li><a href="#tabset-5-4">Teste da Razão de Verossimilhanças (TRV)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-45-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-46-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-3">
+<table class="caption-top">
+<caption>Comparação dos modelos pelos critérios de informação</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: center;">AIC</th>
+<th style="text-align: center;">BIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Exponencial</td>
+<td style="text-align: center;">8288.00</td>
+<td style="text-align: center;">8293.82</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Weibull</td>
+<td style="text-align: center;">8273.30</td>
+<td style="text-align: center;">8284.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Log-Normal</td>
+<td style="text-align: center;">8268.23</td>
+<td style="text-align: center;">8279.88</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gama</td>
+<td style="text-align: center;">8264.65</td>
+<td style="text-align: center;">8276.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gama Generalizada</td>
+<td style="text-align: center;">8236.19</td>
+<td style="text-align: center;">8253.67</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-5-4">
+<table class="caption-top">
+<caption>Comparação dos modelos via TRV (referência: Gama Generalizada)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: center;">TRV</th>
+<th style="text-align: center;">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Exponencial</td>
+<td style="text-align: center;">55.81</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Weibull</td>
+<td style="text-align: center;">39.11</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Log-Normal</td>
+<td style="text-align: center;">34.04</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gama</td>
+<td style="text-align: center;">30.46</td>
+<td style="text-align: center;">&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="resultado" class="slide level2 scrollable">
+<h2>Resultado</h2>
+<p>Entre os modelos avaliados, a distribuição Gama Generalizada apresentou o melhor desempenho. Esse resultado foi evidenciado pela boa aderência visual à curva de Kaplan-Meier, pelos menores valores dos critérios de informação AIC e BIC e pelos resultados do Teste da Razão de Verossimilhanças, que não indicaram evidências de que modelos mais simples apresentassem ajuste equivalente aos dados.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-49-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="text-align:center;">
+<h2>
+Distribuição Gama Generalizada
+</h2>
+<br>
+<table style="margin:auto; font-size:24px;">
+<tbody><tr>
+<td>
+<b>a (Escala)</b>
+</td>
+<td>
+0.1273
+</td>
+</tr>
+<tr>
+<td>
+<b>b (Forma)</b>
+</td>
+<td>
+0.4265
+</td>
+</tr>
+<tr>
+<td>
+<b>k (Forma adicional)</b>
+</td>
+<td>
+4.5593
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Médio</b>
+</td>
+<td>
+6.06 anos
+</td>
+</tr>
+<tr>
+<td>
+<b>Tempo Mediano</b>
+</td>
+<td>
+3.75 anos
+</td>
+</tr>
+</tbody></table>
+</div>
+</section></section>
+<section>
+<section id="estimação-paramétrica-com-covariáveis" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
+<h1>Estimação Paramétrica com covariáveis</h1>
+
+</section>
+<section id="escolha-das-covariáveis" class="slide level2 scrollable">
+<h2>Escolha das covariáveis</h2>
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Passo a passo</a></li><li><a href="#tabset-6-2">Processo</a></li><li><a href="#tabset-6-3">Variáveis do modelo final</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<p>Antes de fazer o passo a passo primeiro fazemos um filtro inicial nas variavies qualitativa, tiramos as que tiveram Teste de peto-peto e Log-Rank falou que não possuem diferença entre os grupos</p>
+<ul>
+<li><p>Passo 1 – Seleção Inicial, ajustar modelos com uma covariável por vez e o modelo nulo. Aplicar o Teste da Razão de Verossimilhanças (TRV);</p></li>
+<li><p>Passo 2 – Modelo Múltiplo Inicial, ajustar um modelo com todas as covariáveis selecionadas. Remover uma covariável por vez;</p></li>
+<li><p>Passo 3 – Reavaliação das Exclusões, ajustar o modelo com as covariáveis retidas. Reintroduzir, individualmente, as covariáveis excluídas no Passo 2;</p></li>
+<li><p>Passo 4 – Reavaliação das Variáveis Iniciais. ajustar o modelo obtido no Passo 3. Testar novamente as covariáveis descartadas no Passo 1.</p></li>
+<li><p>Passo 5 – Avaliação de Interações, ajustar o modelo final de efeitos principais. Testar interações duplas entre as covariáveis selecionadas;</p></li>
+</ul>
+</div>
+<div id="tabset-6-2">
+<ul>
+<li><p>A variável que indicava se o paciente havia sido submetido a cirurgia previamente foi removida no filtro inicial.</p></li>
+<li><p>A variável creatinine foi removida na primeira etapa.</p></li>
+<li><p>Não houve remoção de variáveis na etapa 2.</p></li>
+<li><p>Não foram adicionadas variáveis na etapa 3.</p></li>
+<li><p>Não foram adicionadas variáveis na etapa 4.</p></li>
+<li><p>Nenhuma interação entre variáveis foi selecionada para o modelo final.</p></li>
+</ul>
+</div>
+<div id="tabset-6-3">
+<p>As variáveis selecionadas ao final do processo foram:</p>
+<ul>
+<li><p>recipient_age</p></li>
+<li><p>weight_kg</p></li>
+<li><p>bilirubin</p></li>
+<li><p>ventilator_support</p></li>
+<li><p>ecmo_support</p></li>
+<li><p>donor_recipient_blood_mismatch</p></li>
+<li><p>ischemic_time_hours</p></li>
+<li><p>donor_age</p></li>
+<li><p>recipient_age_c</p></li>
+<li><p>donor_age_c</p></li>
+<li><p>weight_kg_c</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="seleção-do-modelo-final" class="slide level2 scrollable">
+<h2>Seleção do modelo final</h2>
+<div class="panel-tabset">
+<ul id="tabset-7" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-7-1">AIC e BIC</a></li><li><a href="#tabset-7-2">TRV</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Comparação dos modelos paramétricos via AIC e BIC (modelo final)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">AIC</th>
+<th style="text-align: center;">BIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Gama Generalizada</td>
+<td style="text-align: left;">5998.986</td>
+<td style="text-align: center;">6063.051</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Exponencial</td>
+<td style="text-align: left;">6743.637</td>
+<td style="text-align: center;">6796.054</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Weibull</td>
+<td style="text-align: left;">6089.945</td>
+<td style="text-align: center;">6148.185</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LogNormal</td>
+<td style="text-align: left;">6027.966</td>
+<td style="text-align: center;">6086.207</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gama</td>
+<td style="text-align: left;">6010.825</td>
+<td style="text-align: center;">6069.065</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-7-2">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Teste da Razão de Verossimilhança (TRV) comparando modelos ao Gama Generalizada</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Comparacao</th>
+<th style="text-align: center;">TRV</th>
+<th style="text-align: center;">P_valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Exponencial x Gama Generalizada</td>
+<td style="text-align: center;">748.65142</td>
+<td style="text-align: center;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Weibull x Gama Generalizada</td>
+<td style="text-align: center;">92.95874</td>
+<td style="text-align: center;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LogNormal x Gama Generalizada</td>
+<td style="text-align: center;">30.98040</td>
+<td style="text-align: center;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gama x Gama Generalizada</td>
+<td style="text-align: center;">13.83872</td>
+<td style="text-align: center;">0.0001992</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="modelo-final" class="slide level2 scrollable">
+<h2>Modelo Final</h2>
+<div class="panel-tabset">
+<ul id="tabset-8" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-8-1">Modelo</a></li><li><a href="#tabset-8-2">Resíduos</a></li><li><a href="#tabset-8-3">Interpretação</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1">
+<p>Temos, portanto, o seguinte modelo final ajustado.</p>
+<p>O tempo de sobrevivência <span class="math inline">\(T\)</span> segue uma Distribuição Gama Generalizada (GG):</p>
+<p><span class="math display">\[T \sim GG(\mu,\sigma,Q)\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu = \beta_0
+&amp;+ \beta_1 \cdot recipient\_age
++ \beta_2 \cdot weight\_kg
++ \beta_3 \cdot bilirubin
++ \beta_4 \cdot ventilator\_support \\
+&amp;+ \beta_5 \cdot ecmo\_support
++ \beta_6 \cdot donor\_recipient\_blood\_mismatch
++ \beta_7 \cdot ischemic\_time\_hours \\
+&amp;+ \beta_8 \cdot donor\_age
++ \beta_9 \cdot recipient\_age\_c
++ \beta_{10} \cdot donor\_age\_c
++ \beta_{11} \cdot weight\_kg\_c
+\end{aligned}
+\]</span></p>
+<p>Os parâmetros adicionais do modelo são dados por: <span class="math display">\[ \sigma =0.6486\]</span> <span class="math display">\[Q = 0.3746\]</span> O vetor de <span class="math inline">\(\beta_i\)</span> está descrito na tabela abaixo:</p>
+<table class="caption-top">
+<caption>Coeficientes do modelo Gama Generalizada</caption>
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: center;">estimate</th>
+<th style="text-align: center;">std.error</th>
+<th style="text-align: center;">statistic</th>
+<th style="text-align: center;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mu</td>
+<td style="text-align: center;">3.7169</td>
+<td style="text-align: center;">0.0940</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: center;">-0.0235</td>
+<td style="text-align: center;">0.0040</td>
+<td style="text-align: center;">-5.8862</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: center;">0.0157</td>
+<td style="text-align: center;">0.0011</td>
+<td style="text-align: center;">13.6757</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: center;">-0.1312</td>
+<td style="text-align: center;">0.0111</td>
+<td style="text-align: center;">-11.8716</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: center;">-0.7648</td>
+<td style="text-align: center;">0.0327</td>
+<td style="text-align: center;">-23.4002</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: center;">-1.0545</td>
+<td style="text-align: center;">0.0480</td>
+<td style="text-align: center;">-21.9506</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: center;">-0.2634</td>
+<td style="text-align: center;">0.0454</td>
+<td style="text-align: center;">-5.8023</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: center;">-0.1988</td>
+<td style="text-align: center;">0.0164</td>
+<td style="text-align: center;">-12.0892</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: center;">-0.0763</td>
+<td style="text-align: center;">0.0017</td>
+<td style="text-align: center;">-45.1590</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-55-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<table class="caption-top">
+<caption>Coeficientes do modelo Gama Generalizada</caption>
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: center;">estimate</th>
+<th style="text-align: center;">std.error</th>
+<th style="text-align: center;">statistic</th>
+<th style="text-align: center;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mu</td>
+<td style="text-align: center;">3.7169</td>
+<td style="text-align: center;">0.0940</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sigma</td>
+<td style="text-align: center;">0.6486</td>
+<td style="text-align: center;">0.0145</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Q</td>
+<td style="text-align: center;">0.3746</td>
+<td style="text-align: center;">0.0654</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: center;">-0.0235</td>
+<td style="text-align: center;">0.0040</td>
+<td style="text-align: center;">-5.8862</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: center;">0.0157</td>
+<td style="text-align: center;">0.0011</td>
+<td style="text-align: center;">13.6757</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: center;">-0.1312</td>
+<td style="text-align: center;">0.0111</td>
+<td style="text-align: center;">-11.8716</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: center;">-0.7648</td>
+<td style="text-align: center;">0.0327</td>
+<td style="text-align: center;">-23.4002</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: center;">-1.0545</td>
+<td style="text-align: center;">0.0480</td>
+<td style="text-align: center;">-21.9506</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: center;">-0.2634</td>
+<td style="text-align: center;">0.0454</td>
+<td style="text-align: center;">-5.8023</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: center;">-0.1988</td>
+<td style="text-align: center;">0.0164</td>
+<td style="text-align: center;">-12.0892</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: center;">-0.0763</td>
+<td style="text-align: center;">0.0017</td>
+<td style="text-align: center;">-45.1590</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-8-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-57-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-8-3">
+<ul>
+<li><p><strong>recipient_age</strong>: cada aumento está associado a uma redução de aproximadamente <strong>2,3%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>weight_kg</strong>: aumento de aproximadamente <strong>1,6%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>bilirubin</strong>: aumento está associado a uma redução de aproximadamente <strong>12,3%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>ventilator_support</strong>: pacientes sob ventilação mecânica apresentam redução de aproximadamente <strong>53,5%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>ecmo_support</strong>: redução de aproximadamente <strong>65,2%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>donor_recipient_blood_mismatch</strong>: redução de aproximadamente <strong>23,2%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>ischemic_time_hours</strong>: redução de aproximadamente <strong>18,0%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>donor_age</strong>: cada aumento na idade do doador está associado a redução de aproximadamente <strong>7,4%</strong> no tempo de sobrevivência</p></li>
+</ul>
+</div>
+</div>
+</div>
 
 </section></section>
     </div>
