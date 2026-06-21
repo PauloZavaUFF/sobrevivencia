@@ -142,7 +142,7 @@ Paulo Victor Zava Pereira (<a href="mailto:paulozava@id.uff.br" class="email">pa
     </div>
 </div>
 
-  <p class="date">31/05/2026</p>
+  <p class="date">21/06/2026</p>
 </section>
 <section>
 <section id="introdução" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
@@ -1673,14 +1673,489 @@ Distribuição Gama Generalizada
 </div>
 <div id="tabset-8-3">
 <ul>
-<li><p><strong>recipient_age</strong>: cada aumento está associado a uma redução de aproximadamente <strong>2,3%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>weight_kg</strong>: aumento de aproximadamente <strong>1,6%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>bilirubin</strong>: aumento está associado a uma redução de aproximadamente <strong>12,3%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>ventilator_support</strong>: pacientes sob ventilação mecânica apresentam redução de aproximadamente <strong>53,5%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>recipient_age</strong>: cada aumento está associado a uma redução de aproximadamente <strong>2,3%</strong> no tempo médio de sobrevivência</p></li>
+<li><p><strong>weight_kg</strong>: aumento de aproximadamente <strong>1,6%</strong> no tempo médio de sobrevivência</p></li>
+<li><p><strong>bilirubin</strong>: aumento está associado a uma redução de aproximadamente <strong>12,3%</strong> no tempo médio de sobrevivência</p></li>
+<li><p><strong>ventilator_support</strong>: pacientes sob ventilação mecânica apresentam redução de aproximadamente <strong>53,5%</strong> no tempo médio de sobrevivência</p></li>
 <li><p><strong>ecmo_support</strong>: redução de aproximadamente <strong>65,2%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>donor_recipient_blood_mismatch</strong>: redução de aproximadamente <strong>23,2%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>ischemic_time_hours</strong>: redução de aproximadamente <strong>18,0%</strong> no tempo de sobrevivência</p></li>
-<li><p><strong>donor_age</strong>: cada aumento na idade do doador está associado a redução de aproximadamente <strong>7,4%</strong> no tempo de sobrevivência</p></li>
+<li><p><strong>donor_recipient_blood_mismatch</strong>: redução de aproximadamente <strong>23,2%</strong> no tempo médio de sobrevivência</p></li>
+<li><p><strong>ischemic_time_hours</strong>: redução de aproximadamente <strong>18,0%</strong> no tempo médio de sobrevivência</p></li>
+<li><p><strong>donor_age</strong>: cada aumento na idade do doador está associado a redução de aproximadamente <strong>7,4%</strong> no tempo médio de sobrevivência</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="estimação-do-modelo-de-cox" class="title-slide slide level1 center" data-background-image="Capa.png" style="text-align:center">
+<h1>Estimação do Modelo de Cox</h1>
+
+</section>
+<section id="modelo-de-cox" class="slide level2 scrollable">
+<h2>Modelo de Cox</h2>
+<ul>
+<li><p>Nesta etapa será ajustado um modelo de riscos proporcionais de Cox para comparação com o modelo Gengama obtido na etapa anterior.</p></li>
+<li><p>Inicialmente, serão selecionadas as variáveis candidatas para compor o modelo.</p></li>
+<li><p>Em seguida, serão realizadas a análise dos resíduos, a verificação dos pressupostos e a interpretação dos coeficientes estimados.</p></li>
+<li><p>Por fim, o desempenho do modelo de Cox será comparado ao do modelo paramétrico.</p></li>
+</ul>
+</section>
+<section id="escolha-das-covariáveis-1" class="slide level2 scrollable">
+<h2>Escolha das covariáveis</h2>
+<div class="panel-tabset">
+<ul id="tabset-9" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-9-1">Passo a passo</a></li><li><a href="#tabset-9-2">Processo</a></li><li><a href="#tabset-9-3">Variáveis do modelo final</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1">
+<p>Assim como foi realizado para o modelo paramétrico, inicialmente foi aplicado um filtro para excluir variáveis que não apresentaram evidências de associação com o tempo de sobrevivência nos testes de Log-rank e Peto-Peto.</p>
+<ul>
+<li><p>Passo 1 – Seleção Inicial: ajuste de modelos contendo uma covariável por vez e do modelo nulo, utilizando o Teste da Razão de Verossimilhanças (TRV);</p></li>
+<li><p>Passo 2 – Modelo Múltiplo Inicial: ajuste de um modelo contendo todas as covariáveis selecionadas no passo anterior, com avaliação da retirada individual de cada covariável;</p></li>
+<li><p>Passo 3 – Reavaliação das Exclusões: reintrodução das covariáveis excluídas no Passo 2 para verificar sua contribuição ao modelo;</p></li>
+<li><p>Passo 4 – Reavaliação das Variáveis Iniciais: teste das covariáveis descartadas no filtro inicial para verificar se contribuem para o modelo múltiplo;</p></li>
+<li><p>Passo 5 – Refinamento do Modelo: nova avaliação da retirada individual das covariáveis selecionadas após os passos anteriores.</p></li>
+</ul>
+</div>
+<div id="tabset-9-2">
+<ul>
+<li><p>A variável que indicava se o paciente havia sido submetido a cirurgia previamente foi removida no filtro inicial.</p></li>
+<li><p>A variável <strong>creatinine</strong> foi removida no Passo 1 por não apresentar significância estatística no TRV.</p></li>
+<li><p>Não houve remoção de variáveis no Passo 2.</p></li>
+<li><p>Não foram reintroduzidas variáveis no Passo 3.</p></li>
+<li><p>Não foram adicionadas variáveis no Passo 4.</p></li>
+<li><p>Não houve remoção de variáveis no Passo 5.</p></li>
+</ul>
+</div>
+<div id="tabset-9-3">
+<p>As variáveis selecionadas ao final do processo foram:</p>
+<ul>
+<li><p>recipient_age</p></li>
+<li><p>weight_kg</p></li>
+<li><p>bilirubin</p></li>
+<li><p>ventilator_support</p></li>
+<li><p>ecmo_support</p></li>
+<li><p>donor_recipient_blood_mismatch</p></li>
+<li><p>ischemic_time_hours</p></li>
+<li><p>donor_age</p></li>
+<li><p>recipient_age_c</p></li>
+<li><p>donor_age_c</p></li>
+<li><p>weight_kg_c</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="modelo-final-1" class="slide level2 scrollable">
+<h2>Modelo Final</h2>
+<div class="panel-tabset">
+<ul id="tabset-10" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-10-1">Modelo</a></li><li><a href="#tabset-10-2">Resíduos</a></li><li><a href="#tabset-10-3">Interpretação</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1">
+<p>Temos, portanto, o seguinte modelo final ajustado.</p>
+<p>A função de risco do modelo de Cox é dada por:</p>
+<p><span class="math display">\[
+h(t \mid \mathbf{x}) = h_0(t)\exp(\eta)
+\]</span></p>
+<p>em que</p>
+<p><span class="math display">\[
+\begin{aligned}
+\eta =\;&amp;
+\beta_1\,Age_R
++ \beta_2\,Weight
++ \beta_3\,Vent \\
+&amp;+ \beta_4\,ECMO
++ \beta_5\,Mismatch \\
+&amp;+ \beta_6\,IschemicTime
++ \beta_7\,Age_D
+\end{aligned}
+\]</span></p>
+<p>O modelo final foi composto por sete covariáveis, todas estatisticamente significativas ao nível de 5%.</p>
+<p>O vetor de coeficientes estimados está descrito na tabela abaixo:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Coeficientes do modelo de Cox</caption>
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: center;">estimate</th>
+<th style="text-align: center;">std.error</th>
+<th style="text-align: center;">statistic</th>
+<th style="text-align: center;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: center;">0.0270</td>
+<td style="text-align: center;">0.0066</td>
+<td style="text-align: center;">4.0944</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: center;">-0.0274</td>
+<td style="text-align: center;">0.0020</td>
+<td style="text-align: center;">-14.0267</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: center;">0.2133</td>
+<td style="text-align: center;">0.0185</td>
+<td style="text-align: center;">11.5374</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: center;">1.3347</td>
+<td style="text-align: center;">0.0575</td>
+<td style="text-align: center;">23.2037</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: center;">1.8003</td>
+<td style="text-align: center;">0.0819</td>
+<td style="text-align: center;">21.9891</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: center;">0.4301</td>
+<td style="text-align: center;">0.0745</td>
+<td style="text-align: center;">5.7702</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: center;">0.3489</td>
+<td style="text-align: center;">0.0284</td>
+<td style="text-align: center;">12.2985</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: center;">0.1375</td>
+<td style="text-align: center;">0.0037</td>
+<td style="text-align: center;">37.0646</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-59-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-10-2">
+<p>Reíduos de Cox-Snell:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-60-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Reíduos de Schoenfeld:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Teste de Schoenfeld para o pressuposto de riscos proporcionais</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Qui_Quadrado</th>
+<th style="text-align: center;">GL</th>
+<th style="text-align: center;">Valor.p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: left;">4.651</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.0310</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: left;">3.317</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.0686</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: left;">2.453</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.1170</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: left;">0.895</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.3440</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: left;">0.285</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.5940</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: left;">0.307</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.5800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: left;">0.101</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.7500</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: left;">112.597</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GLOBAL</td>
+<td style="text-align: left;">170.315</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-62-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-62-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-10-3">
+<ul>
+<li><p><strong>recipient_age</strong>: cada aumento de uma unidade na idade do receptor está associado a um aumento de aproximadamente 2,5% no risco de ocorrência do evento (<span class="math inline">\(HR = 1,025\)</span>).</p></li>
+<li><p><strong>weight_kg</strong>: cada aumento de uma unidade no peso do receptor está associado a uma redução de aproximadamente 2,6% no risco de ocorrência do evento (<span class="math inline">\(HR = 0,974\)</span>).</p></li>
+<li><p><strong>ventilator_support</strong>: pacientes sob ventilação mecânica apresentam um risco aproximadamente 264,9% maior de ocorrência do evento quando comparados aos demais pacientes (<span class="math inline">\(HR = 3,649\)</span>).</p></li>
+<li><p><strong>ecmo_support</strong>: pacientes submetidos a ECMO apresentam um risco aproximadamente 492,0% maior de ocorrência do evento (<span class="math inline">\(HR = 5,920\)</span>).</p></li>
+<li><p><strong>donor_recipient_blood_mismatch</strong>: a incompatibilidade sanguínea entre doador e receptor está associada a um risco aproximadamente 48,8% maior de ocorrência do evento (<span class="math inline">\(HR = 1,488\)</span>).</p></li>
+<li><p><strong>ischemic_time_hours</strong>: cada aumento de uma unidade no tempo de isquemia está associado a um aumento de aproximadamente 40,9% no risco de ocorrência do evento (<span class="math inline">\(HR = 1,409\)</span>).</p></li>
+<li><p><strong>donor_age</strong>: cada aumento de uma unidade na idade do doador está associado a um aumento de aproximadamente 14,4% no risco de ocorrência do evento (<span class="math inline">\(HR = 1,144\)</span>).</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="comparação-dos-modelos-1" class="slide level2 scrollable">
+<h2>Comparação dos modelos</h2>
+<div class="panel-tabset">
+<ul id="tabset-11" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-11-1">Ajuste</a></li><li><a href="#tabset-11-2">Conlusão</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Coeficientes do modelo Gama Generalizada</caption>
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: center;">estimate</th>
+<th style="text-align: center;">std.error</th>
+<th style="text-align: center;">statistic</th>
+<th style="text-align: center;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mu</td>
+<td style="text-align: center;">3.7169</td>
+<td style="text-align: center;">0.0940</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: center;">-0.0235</td>
+<td style="text-align: center;">0.0040</td>
+<td style="text-align: center;">-5.8862</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: center;">0.0157</td>
+<td style="text-align: center;">0.0011</td>
+<td style="text-align: center;">13.6757</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: center;">-0.1312</td>
+<td style="text-align: center;">0.0111</td>
+<td style="text-align: center;">-11.8716</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: center;">-0.7648</td>
+<td style="text-align: center;">0.0327</td>
+<td style="text-align: center;">-23.4002</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: center;">-1.0545</td>
+<td style="text-align: center;">0.0480</td>
+<td style="text-align: center;">-21.9506</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: center;">-0.2634</td>
+<td style="text-align: center;">0.0454</td>
+<td style="text-align: center;">-5.8023</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: center;">-0.1988</td>
+<td style="text-align: center;">0.0164</td>
+<td style="text-align: center;">-12.0892</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: center;">-0.0763</td>
+<td style="text-align: center;">0.0017</td>
+<td style="text-align: center;">-45.1590</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Coeficientes do modelo de Cox</caption>
+<colgroup>
+<col style="width: 43%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: center;">estimate</th>
+<th style="text-align: center;">std.error</th>
+<th style="text-align: center;">statistic</th>
+<th style="text-align: center;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">recipient_age</td>
+<td style="text-align: center;">0.0270</td>
+<td style="text-align: center;">0.0066</td>
+<td style="text-align: center;">4.0944</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">weight_kg</td>
+<td style="text-align: center;">-0.0274</td>
+<td style="text-align: center;">0.0020</td>
+<td style="text-align: center;">-14.0267</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">bilirubin</td>
+<td style="text-align: center;">0.2133</td>
+<td style="text-align: center;">0.0185</td>
+<td style="text-align: center;">11.5374</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ventilator_support</td>
+<td style="text-align: center;">1.3347</td>
+<td style="text-align: center;">0.0575</td>
+<td style="text-align: center;">23.2037</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ecmo_support</td>
+<td style="text-align: center;">1.8003</td>
+<td style="text-align: center;">0.0819</td>
+<td style="text-align: center;">21.9891</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_recipient_blood_mismatch</td>
+<td style="text-align: center;">0.4301</td>
+<td style="text-align: center;">0.0745</td>
+<td style="text-align: center;">5.7702</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ischemic_time_hours</td>
+<td style="text-align: center;">0.3489</td>
+<td style="text-align: center;">0.0284</td>
+<td style="text-align: center;">12.2985</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">donor_age</td>
+<td style="text-align: center;">0.1375</td>
+<td style="text-align: center;">0.0037</td>
+<td style="text-align: center;">37.0646</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-11-2">
+<ul>
+<li><p>Os modelos selecionaram exatamente o mesmo conjunto de covariáveis.</p></li>
+<li><p>Todas as covariáveis apresentaram significância estatística em ambos os modelos.</p></li>
+<li><p>A direção dos efeitos foi consistente entre os modelos.</p></li>
+<li><p>Os fatores de maior impacto na mortalidade foram <strong>ECMO</strong>, <strong>ventilação mecânica</strong> e <strong>idade do doador</strong>.</p></li>
+<li><p>Os resultados sugerem elevada robustez das associações encontradas.</p></li>
 </ul>
 </div>
 </div>
